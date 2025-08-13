@@ -1,0 +1,6 @@
+{
+  "system_settings": {
+    "log_level": "INFO",
+    "max_concurrent_tasks": 5
+  }
+}
