@@ -368,16 +368,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Community**: [Discord Server](https://discord.gg/aider-enhanced)
 - **Email**: support@aider-enhanced.com
 
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=your-org/aider-enhanced&type=Date)](https://star-history.com/#your-org/aider-enhanced&Date)
-
 ---
 
 <div align="center">
 
 **[Get Started](#installation) • [Documentation](docs/) • [Examples](examples/) • [Contributing](#contributing)**
 
-Made with ❤️ by the Aider Enhanced team
+Made by Team ByteBrains
 
 </div>
