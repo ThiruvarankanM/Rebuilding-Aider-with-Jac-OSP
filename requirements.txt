@@ -1,0 +1,29 @@
+# Core Python packages
+python-dateutil>=2.8.2
+pydantic>=2.5.1
+rich>=13.5.0
+requests>=2.31.0
+PyYAML>=6.0
+
+# For AI / LLM integrations
+litellm>=0.4.0
+transformers>=4.35.0
+torch>=2.1.0
+
+# For web scraping and automation
+beautifulsoup4>=4.12.2
+lxml>=4.9.3
+selenium>=5.9.0
+
+# For data analysis and handling
+numpy>=1.27.0
+pandas>=2.1.1
+
+# For testing
+pytest>=8.2.0
+pytest-mock>=3.12.0
+unittest-xml-reporting>=3.0.4
+
+# Optional: Jac / MTP dependencies
+# (Assuming Jac has a Python package for bridging)
+jac-lang>=1.0.0
