@@ -17,16 +17,15 @@ node RankingResult {
 walker frequency_rank {
     can visit CodeFile, FunctionNode, ClassNode, ImportNode;
 
-    has dict freq_table;
+    has map freq_table;
 
     init {
         freq_table = {};
     }
 
-    # For each node, increment frequency
     visit {
-        if (here.name != null) {
-            if (freq_table.has_key(here.name)) {
+        if here.name != null {
+            if here.name in freq_table {
                 freq_table[here.name] += 1;
             } else {
                 freq_table[here.name] = 1;
@@ -34,11 +33,10 @@ walker frequency_rank {
         }
     }
 
-    # After traversal, produce RankingResults
     exit {
         report("Frequency Ranking Results:");
         for k in freq_table.keys() {
-            spawn node::RankingResult {
+            spawn RankingResult {
                 node_id = k,
                 node_type = "generic",
                 score = float(freq_table[k])
@@ -52,7 +50,7 @@ walker frequency_rank {
 walker dependency_rank {
     can visit CodeFile, FunctionNode, ClassNode;
 
-    has dict dep_score;
+    has map dep_score;
 
     init {
         dep_score = {};
@@ -65,7 +63,7 @@ walker dependency_rank {
     exit {
         report("Dependency Ranking Results:");
         for k in dep_score.keys() {
-            spawn node::RankingResult {
+            spawn RankingResult {
                 node_id = k,
                 node_type = "generic",
                 score = float(dep_score[k])
@@ -77,16 +75,16 @@ walker dependency_rank {
 
 # Walker: Hybrid Ranking (frequency + dependency)
 walker hybrid_rank {
-    has dict scores;
+    has map scores;
 
     init {
         scores = {};
     }
 
     visit {
-        let freq = 1;
-        if (scores.has_key(here.id)) {
-            scores[here.id] += 1;
+        let freq = 1.0;
+        if here.id in scores {
+            scores[here.id] += freq;
         } else {
             scores[here.id] = freq;
         }
@@ -98,7 +96,7 @@ walker hybrid_rank {
     exit {
         report("Hybrid Ranking Results:");
         for k in scores.keys() {
-            spawn node::RankingResult {
+            spawn RankingResult {
                 node_id = k,
                 node_type = "generic",
                 score = float(scores[k])
