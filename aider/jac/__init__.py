@@ -1,9 +1,6 @@
-"""
-jac package initializer
-
-This makes the `jac` folder a Python package and exposes
-commonly used modules for easier importing.
-"""
+# jac/__init__.py
+# Package initializer for the jac folder
+# Exposes commonly used modules for easier importing
 
 from . import editor
 from . import sendchat

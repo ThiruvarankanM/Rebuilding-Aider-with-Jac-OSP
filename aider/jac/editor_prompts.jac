@@ -5,7 +5,7 @@
 walker editor_prompts {
 
     # Code improvement prompt
-    global func code_improvement_prompt(file_name: str, issues: list = [], context: str = ""):
+    def code_improvement_prompt(file_name: string, issues: list = [], context: string = ""):
         prompt = f"""
         CODE IMPROVEMENT TASK: {file_name}
 
@@ -23,7 +23,7 @@ walker editor_prompts {
         return prompt.strip()
 
     # Bug fixing prompt
-    global func bug_fix_prompt(file_name: str, bug_description: str, related_code: str = ""):
+    def bug_fix_prompt(file_name: string, bug_description: string, related_code: string = ""):
         prompt = f"""
         BUG FIX TASK: {file_name}
 
@@ -41,7 +41,7 @@ walker editor_prompts {
         return prompt.strip()
 
     # Refactoring suggestion prompt
-    global func refactoring_prompt(file_name: str, functions: list = [], context: str = ""):
+    def refactoring_prompt(file_name: string, functions: list = [], context: string = ""):
         prompt = f"""
         REFACTORING TASK: {file_name}
 
@@ -59,7 +59,7 @@ walker editor_prompts {
         return prompt.strip()
 
     # Code review prompt
-    global func code_review_prompt(file_name: str, reviewer: str = "assistant", focus_areas: list = []):
+    def code_review_prompt(file_name: string, reviewer: string = "assistant", focus_areas: list = []):
         prompt = f"""
         CODE REVIEW TASK: {file_name}
 
@@ -76,7 +76,7 @@ walker editor_prompts {
         return prompt.strip()
 
     # Add comments prompt
-    global func add_comments_prompt(file_name: str, code_snippet: str, context: str = ""):
+    def add_comments_prompt(file_name: string, code_snippet: string, context: string = ""):
         prompt = f"""
         ADD COMMENTS TASK: {file_name}
 
@@ -94,7 +94,7 @@ walker editor_prompts {
         return prompt.strip()
 
     # Automated suggestion prompt
-    global func automated_suggestion_prompt(file_name: str, task_summary: str):
+    def automated_suggestion_prompt(file_name: string, task_summary: string):
         prompt = f"""
         AUTOMATED EDITOR SUGGESTION: {file_name}
 

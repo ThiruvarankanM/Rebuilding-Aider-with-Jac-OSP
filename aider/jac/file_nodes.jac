@@ -1,7 +1,5 @@
-# ==========================================
 # file_nodes.jac
 # Core OSP module: Defines file and code-level nodes
-# ==========================================
 
 node CodeFile {
     has string filename;
@@ -10,86 +8,91 @@ node CodeFile {
     has bool is_test_file = false;
 
     can log_info() {
-        std.log("📄 File: " + filename + " (" + language + "), Tokens=" + str(total_tokens));
+        report("📄 File: " + this.filename + " (" + this.language + "), Tokens=" + str(this.total_tokens));
     }
 }
 
 node FunctionNode {
     has string name;
-    has list<string> parameters;
-    has string return_type;
-    has int start_line;
-    has int end_line;
-    has int token_count;
+    has list parameters = [];
+    has string return_type = "";
+    has int start_line = 0;
+    has int end_line = 0;
+    has int token_count = 0;
 
     can signature() -> string {
-        return name + "(" + ",".join(parameters) + ") : " + return_type;
+        string params = "";
+        for (int i = 0; i < len(this.parameters); i = i + 1) {
+            if i > 0 {
+                params = params + ",";
+            }
+            params = params + this.parameters[i];
+        }
+        return this.name + "(" + params + ") : " + this.return_type;
     }
 
     can log_info() {
-        std.log("🔹 Function: " + signature() + " [Lines " + str(start_line) + "-" + str(end_line) + "]");
+        report("🔹 Function: " + this.signature() + " [Lines " + str(this.start_line) + "-" + str(this.end_line) + "]");
     }
 }
 
 node ClassNode {
     has string name;
-    has list<string> base_classes;
-    has int start_line;
-    has int end_line;
-    has int token_count;
+    has list base_classes = [];
+    has int start_line = 0;
+    has int end_line = 0;
+    has int token_count = 0;
 
     can log_info() {
-        std.log("🏛 Class: " + name + " (extends " + ",".join(base_classes) + ")");
+        string bases = "";
+        for (int i = 0; i < len(this.base_classes); i = i + 1) {
+            if i > 0 {
+                bases = bases + ",";
+            }
+            bases = bases + this.base_classes[i];
+        }
+        report("🏛 Class: " + this.name + (len(bases) > 0 ? " (extends " + bases + ")" : ""));
     }
 }
 
 node ImportNode {
     has string module_name;
-    has string import_type; # "internal" or "external"
+    has string import_type = ""; # "internal" or "external"
     
     can log_info() {
-        std.log("📦 Import: " + module_name + " [" + import_type + "]");
+        report("📦 Import: " + this.module_name + " [" + this.import_type + "]");
     }
 }
 
-# ========================
 # Relationships
-# ========================
-
 edge contains;   # CodeFile -> FunctionNode, ClassNode, ImportNode
 edge imports;    # CodeFile -> CodeFile (dependency)
 
-# ========================
 # Example usage behaviors
-# ========================
-
-walker file_logger {
+walker FileLogger {
     start {
-        std.log("=== Logging File Graph ===");
+        report("=== Logging File Graph ===");
         visit (*);
     }
 
-    has seen_files = set();
+    has list seen_files = [];
 
     visit {
-        if (here is CodeFile and here not in seen_files) {
+        if (here is CodeFile and not (here in this.seen_files)) {
             here.log_info();
-            seen_files.add(here);
+            this.seen_files += [here];
             visit(out:contains);
             visit(out:imports);
-        }
-        elif (here is FunctionNode) {
+        } else if (here is FunctionNode) {
             here.log_info();
-        }
-        elif (here is ClassNode) {
+        } else if (here is ClassNode) {
             here.log_info();
-        }
-        elif (here is ImportNode) {
+        } else if (here is ImportNode) {
             here.log_info();
         }
     }
 
     stop {
-        std.log("=== End of File Graph ===");
+        report("=== End of File Graph ===");
     }
 }

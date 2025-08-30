@@ -1,6 +1,5 @@
 # tool_integration.jac
 # Jac module for bridging tools: file operations, web search, shell commands, etc.
-# Provides standard interfaces for walkers and genius agent to use.
 
 walker tool_integration {
 
@@ -11,8 +10,8 @@ walker tool_integration {
             content = file.read()
             file.close()
             return content
-        except Exception as e:
-            print(f"[ToolIntegration] Error reading file {path}: {e}")
+        catch e:
+            std.log(f"[ToolIntegration] Error reading file {path}: {e}")
             return ""
 
     # Write content to a file
@@ -21,9 +20,9 @@ walker tool_integration {
             file = open(path, "w")
             file.write(content)
             file.close()
-            print(f"[ToolIntegration] Wrote content to {path}")
-        except Exception as e:
-            print(f"[ToolIntegration] Error writing file {path}: {e}")
+            std.log(f"[ToolIntegration] Wrote content to {path}")
+        catch e:
+            std.log(f"[ToolIntegration] Error writing file {path}: {e}")
 
     # Execute a shell command and return stdout
     global func run_shell(cmd: str) -> str:
@@ -31,16 +30,12 @@ walker tool_integration {
             import subprocess
             result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
             return result.stdout
-        except Exception as e:
-            print(f"[ToolIntegration] Shell command failed: {e}")
+        catch e:
+            std.log(f"[ToolIntegration] Shell command failed: {e}")
             return ""
 
-    # Simple web search (placeholder, can integrate with API)
-    global func web_search(query: str, max_results: int = 5) -> list:
-        """
-        Perform a web search and return top results.
-        Currently returns dummy data; can be extended with real search APIs.
-        """
+    # Simple web search (placeholder)
+    global func web_search(query: str, max_results: int = 5) -> list[str]:
         results = []
         for i in range(max_results):
             results.append(f"Result {i+1} for query '{query}'")
@@ -51,8 +46,8 @@ walker tool_integration {
         import os
         return os.path.exists(path)
 
-    # List files in a directory (optionally recursive)
-    global func list_files(directory: str, recursive: bool = False) -> list:
+    # List files in a directory
+    global func list_files(directory: str, recursive: bool = false) -> list[str]:
         import os
         all_files = []
         try:
@@ -66,11 +61,11 @@ walker tool_integration {
                     if os.path.isfile(full_path):
                         all_files.append(full_path)
             return all_files
-        except Exception as e:
-            print(f"[ToolIntegration] Error listing files: {e}")
+        catch e:
+            std.log(f"[ToolIntegration] Error listing files: {e}")
             return []
 
-    # Read a JSON file
+    # Read JSON file
     global func read_json(path: str) -> dict:
         import json
         try:
@@ -78,19 +73,20 @@ walker tool_integration {
             data = json.load(file)
             file.close()
             return data
-        except Exception as e:
-            print(f"[ToolIntegration] Error reading JSON {path}: {e}")
+        catch e:
+            std.log(f"[ToolIntegration] Error reading JSON {path}: {e}")
             return {}
 
-    # Write JSON data to a file
+    # Write JSON to a file
     global func write_json(path: str, data: dict):
         import json
         try:
             file = open(path, "w")
             json.dump(data, file, indent=2)
             file.close()
-        except Exception as e:
-            print(f"[ToolIntegration] Error writing JSON {path}: {e}")
+            std.log(f"[ToolIntegration] Wrote JSON to {path}")
+        catch e:
+            std.log(f"[ToolIntegration] Error writing JSON {path}: {e}")
 }
 
 # End of tool_integration.jac

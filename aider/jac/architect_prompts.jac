@@ -5,7 +5,7 @@
 walker architect_prompts {
 
     # System design analysis prompt
-    global func system_design_prompt(system_name: str, context: str = "", objectives: list = []):
+    def system_design_prompt(system_name: str, context: str = "", objectives: list = []):
         prompt = f"""
         ARCHITECTURE ANALYSIS: {system_name}
 
@@ -23,7 +23,7 @@ walker architect_prompts {
         return prompt.strip()
 
     # Refactoring guidance prompt
-    global func refactoring_prompt(component_name: str, issues: list, suggestions: list):
+    def refactoring_prompt(component_name: str, issues: list, suggestions: list):
         prompt = f"""
         REFACTORING TASK: {component_name}
 
@@ -41,7 +41,7 @@ walker architect_prompts {
         return prompt.strip()
 
     # Dependency review prompt
-    global func dependency_review_prompt(component_name: str, dependencies: list):
+    def dependency_review_prompt(component_name: str, dependencies: list):
         prompt = f"""
         DEPENDENCY REVIEW: {component_name}
 
@@ -56,7 +56,7 @@ walker architect_prompts {
         return prompt.strip()
 
     # Architecture validation prompt
-    global func architecture_validation_prompt(system_name: str, files: list, checks: list):
+    def architecture_validation_prompt(system_name: str, files: list, checks: list):
         prompt = f"""
         ARCHITECTURE VALIDATION: {system_name}
 
@@ -74,7 +74,7 @@ walker architect_prompts {
         return prompt.strip()
 
     # High-level planning prompt
-    global func high_level_planning_prompt(task_name: str, goals: list, context: str = ""):
+    def high_level_planning_prompt(task_name: str, goals: list, context: str = ""):
         prompt = f"""
         HIGH-LEVEL PLAN: {task_name}
 
@@ -92,7 +92,7 @@ walker architect_prompts {
         return prompt.strip()
 
     # Concise architect prompt generator
-    global func concise_architect_prompt(task_name: str, summary: str):
+    def concise_architect_prompt(task_name: str, summary: str):
         prompt = f"""
         ARCHITECT TASK: {task_name}
         SUMMARY: {summary}

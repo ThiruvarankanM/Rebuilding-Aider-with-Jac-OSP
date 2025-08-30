@@ -5,14 +5,15 @@
 walker mtp_prompts {
 
     # General task template
-    global func task_template(task_name: str, details: str, files: list):
-        prompt = f"""
+    global func task_template(task_name: str, details: str, files: list = []):
+        string files_str = len(files) > 0 ? str.join(files, ", ") : "None"
+        string prompt = f"""
         TASK: {task_name}
         DESCRIPTION:
         {details}
 
         FILES AFFECTED:
-        {', '.join(files) if files else 'None'}
+        {files_str}
 
         INSTRUCTIONS:
         - Use best practices
@@ -23,10 +24,11 @@ walker mtp_prompts {
 
     # Planning prompt
     global func planning_prompt(task_name: str, context: str = ""):
-        prompt = f"""
+        string ctx = context != "" ? context : "No context provided."
+        string prompt = f"""
         PLAN TASK: {task_name}
         CONTEXT:
-        {context if context else 'No context provided.'}
+        {ctx}
 
         STEPS:
         1. Analyze current repo structure
@@ -38,7 +40,7 @@ walker mtp_prompts {
 
     # Editing prompt
     global func editing_prompt(task_name: str, code_snippet: str, instructions: str):
-        prompt = f"""
+        string prompt = f"""
         EDIT TASK: {task_name}
 
         CODE SNIPPET:
@@ -55,14 +57,16 @@ walker mtp_prompts {
         return prompt.strip()
 
     # Validation prompt
-    global func validation_prompt(task_name: str, files: list, checks: list):
-        prompt = f"""
+    global func validation_prompt(task_name: str, files: list = [], checks: list = []):
+        string files_str = len(files) > 0 ? str.join(files, ", ") : "None"
+        string checks_str = len(checks) > 0 ? str.join(checks, ", ") : "None"
+        string prompt = f"""
         VALIDATION TASK: {task_name}
         FILES TO VALIDATE:
-        {', '.join(files)}
+        {files_str}
 
         CHECKS TO PERFORM:
-        {', '.join(checks)}
+        {checks_str}
 
         GOAL:
         - Ensure syntax correctness
@@ -73,14 +77,15 @@ walker mtp_prompts {
 
     # Web/tool search prompt
     global func tool_integration_prompt(task_name: str, query: str, context: str = ""):
-        prompt = f"""
+        string ctx = context != "" ? context : "No additional context."
+        string prompt = f"""
         TOOL ASSISTANCE TASK: {task_name}
 
         QUERY:
         {query}
 
         CONTEXT:
-        {context if context else 'No additional context.'}
+        {ctx}
 
         INSTRUCTIONS:
         - Provide relevant information only
@@ -91,12 +96,11 @@ walker mtp_prompts {
 
     # Concise prompt generator
     global func concise_prompt(task_name: str, summary: str):
-        prompt = f"""
+        string prompt = f"""
         TASK: {task_name}
         SUMMARY: {summary}
         """
         return prompt.strip()
-
 }
 
 # End of mtp_prompts.jac

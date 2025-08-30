@@ -1,121 +1,160 @@
 # graph_walkers.jac
 # Graph traversal walkers for RepoMap / SpatialGraph
 
-# Depth-First Search walker
-walker dfs(start: CodeFile, visit: callable):
-    visited = set()
-    stack = [start]
+walker GraphWalkers {
 
-    while stack:
-        current = stack.pop()
-        if current not in visited:
-            visit(current)
-            visited.add(current)
-            # Push neighbors to stack
-            neighbors = here.get_neighbors(current)
-            for neighbor in reversed(neighbors):
-                if neighbor not in visited:
-                    stack.append(neighbor)
+    # Depth-First Search
+    can dfs(CodeFile start, callable visit) {
+        set visited = {}
+        list stack = [start]
 
-# Breadth-First Search walker
-walker bfs(start: CodeFile, visit: callable):
-    visited = set()
-    queue = [start]
+        while len(stack) > 0 {
+            CodeFile current = stack.pop()
+            if current not in visited {
+                visit(current)
+                visited.add(current)
+                list neighbors = this.get_neighbors(current)
+                for neighbor in reversed(neighbors) {
+                    if neighbor not in visited {
+                        stack += [neighbor]
+                    }
+                }
+            }
+        }
+    }
 
-    while queue:
-        current = queue.pop(0)
-        if current not in visited:
-            visit(current)
-            visited.add(current)
-            neighbors = here.get_neighbors(current)
-            for neighbor in neighbors:
-                if neighbor not in visited:
-                    queue.append(neighbor)
+    # Breadth-First Search
+    can bfs(CodeFile start, callable visit) {
+        set visited = {}
+        list queue = [start]
 
-# Topological sort (Kahn's algorithm)
-walker topological_sort() -> list[CodeFile]:
-    in_degree = map[CodeFile, int]()
-    all_nodes = here.get_all_nodes()
-    
-    # Initialize in-degree
-    for node in all_nodes:
-        in_degree[node] = 0
-    for node, neighbors in here.adjacency.items():
-        for neighbor in neighbors:
-            in_degree[neighbor] += 1
-    
-    # Nodes with 0 in-degree
-    zero_in = [node for node in all_nodes if in_degree[node] == 0]
-    result = []
+        while len(queue) > 0 {
+            CodeFile current = queue.pop(0)
+            if current not in visited {
+                visit(current)
+                visited.add(current)
+                list neighbors = this.get_neighbors(current)
+                for neighbor in neighbors {
+                    if neighbor not in visited {
+                        queue += [neighbor]
+                    }
+                }
+            }
+        }
+    }
 
-    while zero_in:
-        node = zero_in.pop()
-        result.append(node)
-        for neighbor in here.get_neighbors(node):
-            in_degree[neighbor] -= 1
-            if in_degree[neighbor] == 0:
-                zero_in.append(neighbor)
+    # Topological sort (Kahn's algorithm)
+    can topological_sort() -> list {
+        map in_degree = {}
+        list all_nodes = this.get_all_nodes()
+        for node in all_nodes {
+            in_degree[node] = 0
+        }
 
-    if len(result) != len(all_nodes):
-        std.warn("Graph has cycles; topological sort incomplete")
-    
-    return result
+        for node in all_nodes {
+            for neighbor in this.get_neighbors(node) {
+                in_degree[neighbor] = in_degree.get(neighbor, 0) + 1
+            }
+        }
 
-# Find all paths from source to target (DFS based)
-walker find_all_paths(source: CodeFile, target: CodeFile) -> list[list[CodeFile]]:
-    paths = []
+        list zero_in = [node for node in all_nodes if in_degree[node] == 0]
+        list result = []
 
-    def dfs_path(node, path):
-        path.append(node)
-        if node == target:
-            paths.append(list(path))
-        else:
-            for neighbor in here.get_neighbors(node):
-                if neighbor not in path:
-                    dfs_path(neighbor, path)
-        path.pop()
+        while len(zero_in) > 0 {
+            CodeFile node = zero_in.pop()
+            result += [node]
+            for neighbor in this.get_neighbors(node) {
+                in_degree[neighbor] -= 1
+                if in_degree[neighbor] == 0 {
+                    zero_in += [neighbor]
+                }
+            }
+        }
 
-    dfs_path(source, [])
-    return paths
+        if len(result) != len(all_nodes) {
+            std.warn("Graph has cycles; topological sort incomplete")
+        }
 
-# Shortest path (BFS-based, unweighted)
-walker shortest_path(source: CodeFile, target: CodeFile) -> list[CodeFile]:
-    from collections import deque
-    visited = set()
-    parent = map[CodeFile, CodeFile]()
-    queue = deque([source])
-    visited.add(source)
+        return result
+    }
 
-    while queue:
-        current = queue.popleft()
-        if current == target:
-            # Reconstruct path
-            path = []
-            while current:
-                path.insert(0, current)
-                current = parent.get(current, None)
-            return path
-        for neighbor in here.get_neighbors(current):
-            if neighbor not in visited:
-                visited.add(neighbor)
-                parent[neighbor] = current
-                queue.append(neighbor)
-    
-    return []  # No path found
+    # Find all paths (DFS-based)
+    can find_all_paths(CodeFile source, CodeFile target) -> list {
+        list paths = []
 
-# Debug walker: print traversal order
-walker print_traversal(start: CodeFile, method: str = "dfs"):
-    order = []
+        can dfs_path(CodeFile node, list path) {
+            path += [node]
+            if node == target {
+                paths += [list(path)]
+            } else {
+                for neighbor in this.get_neighbors(node) {
+                    if neighbor not in path {
+                        dfs_path(neighbor, path)
+                    }
+                }
+            }
+            path.pop()
+        }
 
-    def visitor(node):
-        order.append(node.file_path)
+        dfs_path(source, [])
+        return paths
+    }
 
-    if method == "dfs":
-        here.dfs(start, visitor)
-    elif method == "bfs":
-        here.bfs(start, visitor)
-    else:
-        std.warn(f"Unknown traversal method: {method}")
-        return
+    # Shortest path (BFS-based, unweighted)
+    can shortest_path(CodeFile source, CodeFile target) -> list {
+        set visited = {source}
+        map parent = {}
+        list queue = [source]
 
-    std.log(f"{method.upper()} traversal order: {order}")
+        while len(queue) > 0 {
+            CodeFile current = queue.pop(0)
+            if current == target {
+                list path = []
+                while current != null {
+                    path.insert(0, current)
+                    current = parent.get(current, null)
+                }
+                return path
+            }
+            for neighbor in this.get_neighbors(current) {
+                if neighbor not in visited {
+                    visited.add(neighbor)
+                    parent[neighbor] = current
+                    queue += [neighbor]
+                }
+            }
+        }
+
+        return []  # No path found
+    }
+
+    # Debug: print traversal order
+    can print_traversal(CodeFile start, string method = "dfs") {
+        list order = []
+
+        can visitor(node) {
+            order += [node.filename]
+        }
+
+        if method == "dfs" {
+            this.dfs(start, visitor)
+        } elif method == "bfs" {
+            this.bfs(start, visitor)
+        } else {
+            std.warn("Unknown traversal method: " + method)
+            return
+        }
+
+        std.log(method.upper() + " traversal order: " + str(order))
+    }
+
+    # Placeholder: you must implement actual neighbor retrieval
+    can get_neighbors(CodeFile node) -> list {
+        return []  # override with actual graph logic
+    }
+
+    # Placeholder: retrieve all nodes in graph
+    can get_all_nodes() -> list {
+        return []  # override with actual node collection
+    }
+}

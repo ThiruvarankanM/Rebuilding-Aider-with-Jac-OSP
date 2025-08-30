@@ -5,18 +5,18 @@
 walker planning_walker {
 
     # Generate a plan for a list of tasks with optional dependencies
-    global func generate_plan(tasks: list, dependencies: dict = {}) -> list:
+    global func generate_plan(tasks: list, dependencies: map = {}) -> list:
         """
         Args:
             tasks: List of task names
-            dependencies: Dict mapping task -> list of dependent tasks
+            dependencies: Map mapping task -> list of dependent tasks
 
         Returns:
             Ordered list of tasks respecting dependencies (topological sort)
         """
-        sorted_tasks = []
-        visited = {}
-        
+        list sorted_tasks = []
+        map visited = {}
+
         # Recursive DFS for topological sort
         func visit(task: str):
             if task in visited:
@@ -29,10 +29,10 @@ walker planning_walker {
                 visit(dep)
             visited[task] = "visited"
             sorted_tasks.append(task)
-        
+
         for t in tasks:
             visit(t)
-        
+
         return sorted_tasks
 
     # Estimate task effort based on simple heuristics (length, complexity)
@@ -40,7 +40,7 @@ walker planning_walker {
         """
         Returns an integer representing estimated effort (1-10)
         """
-        length = len(task)
+        int length = len(task)
         if length < 10:
             return 1
         elif length < 20:
@@ -53,10 +53,10 @@ walker planning_walker {
             return 10
 
     # Generate prioritized plan (tasks ordered by dependencies + effort)
-    global func prioritized_plan(tasks: list, dependencies: dict = {}) -> list:
-        ordered = generate_plan(tasks, dependencies)
+    global func prioritized_plan(tasks: list, dependencies: map = {}) -> list:
+        list ordered = generate_plan(tasks, dependencies)
         # Sort by descending effort to prioritize heavier tasks first
-        return sorted(ordered, key=lambda t: -estimate_effort(t))
+        return sort(ordered, by=lambda t: -estimate_effort(t))
 
     # Merge sub-plans from multiple modules or walkers
     global func merge_subplans(subplans: list) -> list:
@@ -64,8 +64,8 @@ walker planning_walker {
         Takes multiple lists of tasks and merges them, removing duplicates
         while preserving order.
         """
-        seen = set()
-        merged = []
+        set seen = set()
+        list merged = []
         for plan in subplans:
             for task in plan:
                 if task not in seen:
