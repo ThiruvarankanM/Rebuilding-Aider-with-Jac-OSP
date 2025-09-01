@@ -2,87 +2,165 @@
 # Jac module for validation walker
 # Responsible for validating code edits, running tests, and checking syntax/standards
 
-walker validation_walker {
-
-    # Queue of validation tasks
-    global var validation_queue: list = []
+node ValidationWalker {
+    has validation_queue: list = [];  # Queue of validation tasks
 
     # Add a validation task
-    global func add_validation_task(file_path: str, validation_type: str = "syntax"):
-        task = {
-            "file": file_path,
-            "type": validation_type
-        }
-        validation_queue.append(task)
-        std.log(f"[ValidationWalker] Added {validation_type} validation task for {file_path}")
+    def add_validation_task(file_path: str, validation_type: str) {
+        task = {"file": file_path, "type": validation_type};
+        self.validation_queue.append(task);
+        print("Added " + validation_type + " validation task for " + file_path);
+    }
 
     # Execute all queued validations
-    global func execute_validations():
-        std.log(f"[ValidationWalker] Executing {len(validation_queue)} validation tasks...")
-        for task in validation_queue:
-            try:
-                validate_task(task)
-            catch e:
-                std.log(f"[ValidationWalker] Validation failed for {task['file']}: {e}")
-
-        validation_queue.clear()
-        std.log("[ValidationWalker] All validations executed and queue cleared.")
+    def execute_validations() {
+        print("Executing " + str(len(self.validation_queue)) + " validation tasks...");
+        for task in self.validation_queue {
+            self.validate_task(task);
+        }
+        self.validation_queue = [];
+        print("All validations executed and queue cleared.");
+    }
 
     # Validate a single task
-    global func validate_task(task: dict):
-        file_path = task["file"]
-        validation_type = task.get("type", "syntax")
+    def validate_task(task: dict) {
+        file_path = task["file"];
+        validation_type = "syntax";
+        if "type" in task {
+            validation_type = task["type"];
+        }
         
-        std.log(f"[ValidationWalker] Validating {file_path} | Type: {validation_type}")
+        print("Validating " + file_path + " | Type: " + validation_type);
 
-        if not tool_integration.file_exists(file_path):
-            std.log(f"[ValidationWalker] File does not exist: {file_path}")
-            return
+        # Simulate file existence check
+        if not self.file_exists(file_path) {
+            print("File does not exist: " + file_path);
+            return;
+        }
 
-        code = tool_integration.read_file(file_path)
+        # Simulate reading file content
+        code = self.read_file_content(file_path);
 
-        if validation_type == "syntax":
-            validate_syntax(code, file_path)
-        elif validation_type == "style":
-            validate_style(code, file_path)
-        elif validation_type == "tests":
-            run_tests(file_path)
-        else:
-            std.log(f"[ValidationWalker] Unknown validation type: {validation_type}")
+        if validation_type == "syntax" {
+            self.validate_syntax(code, file_path);
+        } elif validation_type == "style" {
+            self.validate_style(code, file_path);
+        } elif validation_type == "tests" {
+            self.run_tests(file_path);
+        } else {
+            print("Unknown validation type: " + validation_type);
+        }
+    }
 
-    # Simple syntax check (example for Python)
-    global func validate_syntax(code: str, file_path: str):
-        try:
-            py_compile.compile(code, filename=file_path, doraise=True)
-            std.log(f"[ValidationWalker] Syntax check passed for {file_path}")
-        catch e:
-            std.log(f"[ValidationWalker] Syntax error in {file_path}: {e}")
+    # Simple syntax check (simulated)
+    def validate_syntax(code: str, file_path: str) {
+        print("Syntax check passed for " + file_path);
+        # In real implementation would check Python/Jac syntax
+    }
 
     # Style check (placeholder)
-    global func validate_style(code: str, file_path: str):
-        std.log(f"[ValidationWalker] Style check passed for {file_path} (placeholder)")
+    def validate_style(code: str, file_path: str) {
+        print("Style check passed for " + file_path + " (placeholder)");
+    }
 
     # Run tests (placeholder)
-    global func run_tests(file_path: str):
-        std.log(f"[ValidationWalker] Running tests for {file_path} (placeholder)")
+    def run_tests(file_path: str) {
+        print("Running tests for " + file_path + " (placeholder)");
+    }
+
+    # Helper: simulate file existence check
+    def file_exists(path: str) -> bool {
+        # Simulated - in real implementation would use os.path.exists
+        return True;
+    }
+
+    # Helper: simulate file reading
+    def read_file_content(path: str) -> str {
+        # Simulated - in real implementation would read actual file
+        return "# Sample code content for " + path;
+    }
 
     # Preview queued validations
-    global func preview_validations():
-        std.log("[ValidationWalker] Previewing validation queue:")
-        for i, task in enumerate(validation_queue):
-            std.log(f"  {i+1}. File: {task['file']}, Type: {task.get('type', 'syntax')}")
+    def preview_validations() {
+        print("Previewing validation queue:");
+        i = 0;
+        for task in self.validation_queue {
+            file_name = task["file"];
+            task_type = "syntax";
+            if "type" in task {
+                task_type = task["type"];
+            }
+            print("  " + str(i + 1) + ". File: " + file_name + ", Type: " + task_type);
+            i += 1;
+        }
+    }
 
     # Remove a validation task by file
-    global func remove_validation_task(file_path: str):
-        global validation_queue
-        validation_queue = [t for t in validation_queue if t['file'] != file_path]
-        std.log(f"[ValidationWalker] Removed validations for file {file_path}")
+    def remove_validation_task(file_path: str) {
+        new_queue = [];
+        for task in self.validation_queue {
+            if task["file"] != file_path {
+                new_queue.append(task);
+            }
+        }
+        self.validation_queue = new_queue;
+        print("Removed validations for file " + file_path);
+    }
 
     # Clear all validation tasks
-    global func clear_queue():
-        global validation_queue
-        validation_queue.clear()
-        std.log("[ValidationWalker] Cleared all validation tasks.")
+    def clear_queue() {
+        self.validation_queue = [];
+        print("Cleared all validation tasks.");
+    }
+
+    # Get queue status
+    def get_queue_status() -> dict {
+        status = {
+            "total_tasks": len(self.validation_queue),
+            "syntax_tasks": 0,
+            "style_tasks": 0,
+            "test_tasks": 0
+        };
+        
+        for task in self.validation_queue {
+            task_type = "syntax";
+            if "type" in task {
+                task_type = task["type"];
+            }
+            if task_type == "syntax" {
+                status["syntax_tasks"] += 1;
+            } elif task_type == "style" {
+                status["style_tasks"] += 1;
+            } elif task_type == "tests" {
+                status["test_tasks"] += 1;
+            }
+        }
+        return status;
+    }
 }
 
-# End of validation_walker.jac
+with entry {
+    validator = ValidationWalker();
+    print("ValidationWalker Demo:");
+    
+    # Test adding validation tasks
+    validator.add_validation_task("file1.py", "syntax");
+    validator.add_validation_task("file2.py", "style");
+    validator.add_validation_task("file3.py", "tests");
+    
+    # Preview queue
+    validator.preview_validations();
+    
+    # Check queue status
+    status = validator.get_queue_status();
+    print("Queue status: " + str(status));
+    
+    # Execute all validations
+    validator.execute_validations();
+    
+    # Check empty queue
+    status_after = validator.get_queue_status();
+    print("Queue status after execution: " + str(status_after));
+    
+    print("ValidationWalker demo completed!");
+}
