@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Aider-Genius CLI - Complete Command Line Interface
-Real autonomous coding with Jac-OSP integration
+Aider-Genius Command Line Interface
+Professional autonomous coding assistant with Jac-OSP integration
 """
 
 import os
@@ -46,47 +46,46 @@ class AiderGeniusCLI:
             # Initialize LLM Client (will handle API key loading)
             self.llm_client = LLMClient()
             
-            console.print("✅ All components initialized successfully")
-            
+            console.print("✓ All components initialized successfully")
         except Exception as e:
-            console.print(f"⚠️ Component initialization: {e}")
+            console.print(f"Warning: Component initialization issue - {e}")
     
     def analyze_project(self, target_dir: str = None) -> Dict[str, Any]:
-        """Analyze project using OSP ranking"""
+        """Analyze project using OSP ranking algorithms"""
         if not target_dir:
             target_dir = self.project_root
             
-        console.print(f"🔍 Analyzing project: {target_dir}")
+        console.print(f"Analyzing project: {target_dir}")
         
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
             console=console,
         ) as progress:
-            task = progress.add_task("Running OSP analysis...", total=None)
+            task = progress.add_task("Executing OSP analysis...", total=None)
             
-            # Use Jac OSP ranking
+            # Execute Jac OSP ranking
             try:
                 osp_result = self.jac_bridge.call_walker(
                     "file_analysis", "get_osp_ranking", 
                     {"target_dir": target_dir}
                 )
-                progress.update(task, description="✅ OSP analysis complete")
+                progress.update(task, description="✓ OSP analysis complete")
                 return osp_result
             except Exception as e:
-                progress.update(task, description=f"❌ OSP analysis failed: {e}")
+                progress.update(task, description=f"✗ OSP analysis failed: {e}")
                 return {"error": str(e)}
     
     def optimize_tokens(self, file_path: str = None) -> Dict[str, Any]:
-        """Optimize token usage for file or project"""
-        console.print("💰 Running token optimization...")
+        """Execute token usage optimization"""
+        console.print("Executing token optimization...")
         
         try:
             if file_path and os.path.exists(file_path):
                 with open(file_path, 'r') as f:
                     code = f.read()
             else:
-                # Optimize project-wide
+                # Project-wide optimization
                 code = "# Project-wide optimization"
             
             result = self.jac_bridge.call_walker(
@@ -94,20 +93,20 @@ class AiderGeniusCLI:
                 {"code": code}
             )
             
-            console.print("✅ Token optimization complete")
+            console.print("✓ Token optimization complete")
             return result
             
         except Exception as e:
-            console.print(f"❌ Token optimization failed: {e}")
+            console.print(f"✗ Token optimization failed: {e}")
             return {"error": str(e)}
     
     def auto_edit(self, task: str, files: List[str] = None) -> Dict[str, Any]:
-        """Autonomous code editing using Jac-OSP"""
-        console.print(f"🤖 Executing autonomous edit: {task}")
+        """Execute autonomous code editing using OSP guidance"""
+        console.print(f"Executing autonomous edit: {task}")
         
         if not files:
-            # Use OSP to find relevant files
-            console.print("🔍 Using OSP to find relevant files...")
+            # Use OSP to identify relevant files
+            console.print("Using OSP to find relevant files...")
             osp_result = self.analyze_project()
             if "ranked_files" in osp_result:
                 files = [f["path"] for f in osp_result["ranked_files"][:3]]
@@ -115,19 +114,19 @@ class AiderGeniusCLI:
                 files = []
         
         if not files:
-            return {"error": "No relevant files found"}
+            return {"error": "No relevant files identified"}
         
         # Execute autonomous editing
         try:
             result = self.auto_editor.autonomous_edit(task, files)
             return result
         except Exception as e:
-            console.print(f"❌ Autonomous editing failed: {e}")
+            console.print(f"✗ Autonomous editing failed: {e}")
             return {"error": str(e)}
     
     def setup_config(self) -> bool:
-        """Setup configuration for first-time users"""
-        console.print("⚙️ Setting up Aider-Genius configuration...")
+        """Initialize system configuration"""
+        console.print("Setting up Aider-Genius configuration...")
         
         config_dir = Path.home() / ".aider-genius"
         config_dir.mkdir(exist_ok=True)
@@ -149,13 +148,13 @@ class AiderGeniusCLI:
             with open(config_file, 'w') as f:
                 json.dump(default_config, f, indent=2)
             
-            console.print(f"✅ Configuration created: {config_file}")
-            console.print("💡 Add your API key to complete setup:")
+            console.print("Configuration setup complete.")
+            console.print("Add your API key to complete setup:")
             console.print(f"   Edit: {config_file}")
             console.print("   Add: 'api_key': 'your-api-key-here'")
             
         else:
-            console.print("✅ Configuration already exists")
+            console.print("Configuration already exists")
             
         return True
 
@@ -201,7 +200,7 @@ def main():
     cli = AiderGeniusCLI()
     
     console.print(Panel.fit(
-        "🧠 AIDER-GENIUS: Autonomous AI Coding Assistant\n"
+        "AIDER-GENIUS: Autonomous AI Coding Assistant\n"
         "Powered by Jac Object-Spatial Programming",
         style="bold cyan"
     ))
@@ -215,35 +214,35 @@ def main():
         result = cli.analyze_project(target_dir)
         
         if "error" not in result:
-            console.print("📊 [bold green]OSP Analysis Results:[/bold green]")
+            console.print("[bold green]OSP Analysis Results:[/bold green]")
             if "ranked_files" in result:
                 for i, file_info in enumerate(result["ranked_files"][:5], 1):
                     console.print(f"   {i}. {file_info['path']} (relevance: {file_info['relevance']:.2f})")
         else:
-            console.print(f"❌ Analysis failed: {result['error']}")
+            console.print(f"✗ Analysis failed: {result['error']}")
     
     elif args.command == 'optimize':
         target_file = args.target
         result = cli.optimize_tokens(target_file)
         
         if "error" not in result:
-            console.print("💰 [bold green]Token Optimization Results:[/bold green]")
+            console.print("[bold green]Token Optimization Results:[/bold green]")
             console.print(f"   Original: {result.get('original_tokens', 'N/A')} tokens")
             console.print(f"   Optimized: {result.get('optimized_tokens', 'N/A')} tokens") 
             console.print(f"   Savings: {result.get('savings_percent', 'N/A'):.1f}%")
         else:
-            console.print(f"❌ Optimization failed: {result['error']}")
+            console.print(f"✗ Optimization failed: {result['error']}")
     
     elif args.command == 'edit':
         if not args.target:
-            console.print("❌ Please provide a task description for editing")
+            console.print("✗ Please provide a task description for editing")
             return
             
         task = args.target
         files = args.files
         
         if args.dry_run:
-            console.print(f"🔍 [bold yellow]DRY RUN - Would execute:[/bold yellow] {task}")
+            console.print(f"[bold yellow]DRY RUN - Would execute:[/bold yellow] {task}")
             if files:
                 console.print(f"   Target files: {files}")
             else:
@@ -253,14 +252,14 @@ def main():
         result = cli.auto_edit(task, files)
         
         if "error" not in result:
-            console.print("🎯 [bold green]Autonomous Edit Results:[/bold green]")
+            console.print("[bold green]Autonomous Edit Results:[/bold green]")
             console.print(f"   Task: {result.get('task', task)}")
             console.print(f"   Files modified: {len(result.get('changes', []))}")
             console.print(f"   Success: {result.get('success', False)}")
         else:
-            console.print(f"❌ Edit failed: {result['error']}")
+            console.print(f"✗ Edit failed: {result['error']}")
     
-    console.print("\n💡 Use --help for more options")
+    console.print("\nUse --help for more options")
 
 if __name__ == "__main__":
     main()

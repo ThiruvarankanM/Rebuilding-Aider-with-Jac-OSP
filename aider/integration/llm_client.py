@@ -50,7 +50,7 @@ class LLMClient:
         api_key = self.config.get("api_key") or os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY") or os.getenv("ANTHROPIC_API_KEY")
         
         if not api_key:
-            print("⚠️ No API key found. Set in config or environment variable.")
+            print("Warning: No API key found. Set in config or environment variable.")
             return
         
         try:
@@ -69,10 +69,10 @@ class LLMClient:
                 self.client = Anthropic(api_key=api_key)
                 self.current_provider = "anthropic"
             else:
-                print(f"⚠️ Unknown provider: {provider}")
+                print(f"Warning: Unknown provider: {provider}")
                 
         except Exception as e:
-            print(f"⚠️ Failed to initialize LLM client: {e}")
+            print(f"Warning: Failed to initialize LLM client: {e}")
     
     def generate_code(self, prompt: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
         """

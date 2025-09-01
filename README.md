@@ -1,78 +1,79 @@
-# 🧠 Aider-Genius: AI-Powered Autonomous Code Editor
+# Aider-Genius: AI-Powered Autonomous Code Editor
 
-**Revolutionary AI coding assistant powered by Jac Object-Spatial Programming (OSP)**
+**Professional AI coding assistant powered by Jac Object-Spatial Programming (OSP)**
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![OpenRouter Compatible](https://img.shields.io/badge/OpenRouter-Compatible-green.svg)](https://openrouter.ai/)
-[![Free AI Models](https://img.shields.io/badge/AI-Free%20Models-brightgreen.svg)](https://openrouter.ai/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 🚀 **What It Does**
+## Overview
 
-Aider-Genius is an autonomous AI coding assistant that:
-- **Edits your files automatically** using AI reasoning
-- **Analyzes code spatially** with innovative OSP algorithms  
-- **Optimizes API costs** by 30%+ through intelligent token management
-- **Works with FREE AI models** via OpenRouter integration
-- **Provides professional CLI** for daily coding workflows
+Aider-Genius is an autonomous AI coding assistant that provides:
+- Automated file editing using advanced AI reasoning
+- Spatial code analysis through innovative OSP algorithms  
+- API cost optimization with 30%+ token reduction
+- Support for multiple LLM providers including free models
+- Professional command-line interface for development workflows
 
-## ⚡ **Quick Start**
+## Quick Start
 
-### **Installation**
+### Installation
 ```bash
 git clone https://github.com/ThiruvarankanM/Rebuilding-Aider-with-Jac-OSP.git
 cd Rebuilding-Aider-with-Jac-OSP
+source .venv/bin/activate
 pip install -e .
 ```
 
-### **Setup**
+### Configuration
 ```bash
 aider-genius setup
-# Add your OpenRouter API key to ~/.aider-genius/config.json
+# Configure API settings in ~/.aider-genius/config.json
 ```
 
-### **Usage**
+### Basic Usage
 ```bash
-# Analyze your project structure
+# Analyze project structure
 aider-genius analyze
 
 # Optimize token usage
 aider-genius optimize
 
-# Let AI edit your code automatically
+# Autonomous code editing
 aider-genius edit "add error handling to functions"
 aider-genius edit "improve code documentation"
 aider-genius edit "optimize performance"
 ```
 
-## 🎯 **Key Features**
+## Key Features
 
-### **🤖 Autonomous Code Editing**
-- Real file modification with AI reasoning
-- Intelligent pattern recognition
-- Automatic backup system before changes
-- Git integration for safe editing
+### Autonomous Code Editing
+- Intelligent file modification with AI reasoning
+- Advanced pattern recognition algorithms
+- Automated backup system with version control
+- Git integration for secure operations
 
-### **🧠 Jac Object-Spatial Programming**
-- Revolutionary spatial code analysis
-- Multi-dimensional file ranking
-- Advanced dependency understanding
+### Jac Object-Spatial Programming
+- Spatial code analysis algorithms
+- Multi-dimensional file relationship mapping
+- Advanced dependency resolution
 - Context-aware code organization
 
-### **💰 Cost Optimization**
-- 30%+ reduction in API token usage
+### Cost Optimization
+- Token usage reduction up to 30%
 - Intelligent prompt optimization
-- Support for FREE AI models
-- No monthly subscription required
+- Support for cost-effective AI models
+- Efficient resource management
 
-### **⚙️ Professional CLI**
-- Clean command-line interface
-- Progress indicators and status updates
-- Dry-run mode for safe testing
-- Configuration management
+### Professional CLI
+- Comprehensive command-line interface
+- Real-time progress indicators
+- Dry-run mode for validation
+- Flexible configuration management
 
-## 🔧 **Configuration**
+## Configuration
 
-### **OpenRouter Setup (Recommended - FREE Models)**
+### OpenRouter Setup (Recommended)
 ```json
 {
   "llm_provider": "openrouter",
@@ -83,103 +84,103 @@ aider-genius edit "optimize performance"
 }
 ```
 
-### **Other Providers**
-- **OpenAI**: Full GPT-4 support
+### Supported Providers
+- **OpenAI**: Complete GPT model support
 - **Anthropic**: Claude integration  
-- **Custom**: Add your own provider
+- **OpenRouter**: Multi-model access with free tiers
+- **Custom**: Extensible provider system
 
-## 📚 **Commands**
+## Command Reference
 
 | Command | Description |
 |---------|-------------|
-| `aider-genius setup` | Initialize configuration |
-| `aider-genius analyze` | OSP spatial analysis |
-| `aider-genius optimize` | Token usage optimization |
-| `aider-genius edit <task>` | Autonomous file editing |
-| `aider-genius --help` | Show all options |
+| `aider-genius setup` | Initialize system configuration |
+| `aider-genius analyze` | Perform OSP spatial analysis |
+| `aider-genius optimize` | Optimize token usage |
+| `aider-genius edit <task>` | Execute autonomous editing |
+| `aider-genius --help` | Display help information |
 
-## 🏆 **Innovation Highlights**
+## Innovation Highlights
 
-### **World's First Jac-OSP Integration**
-- Spatial programming algorithms for code analysis
+### Jac-OSP Integration
+- Advanced spatial programming algorithms for code analysis
 - Multi-dimensional file relationship mapping
-- Context-aware editing decisions
+- Context-aware editing and decision making
 
-### **Proven Cost Savings**
-- Real 30%+ API token reduction
-- Smart prompt optimization
-- Efficient context management
+### Performance Optimization
+- Demonstrated 30% API token reduction
+- Intelligent prompt optimization strategies
+- Efficient context and resource management
 
-### **Production Ready**
-- Professional CLI interface
-- Comprehensive backup system
-- Git integration and safety features
-- Multiple LLM provider support
+### Production Features
+- Enterprise-grade CLI interface
+- Comprehensive backup and versioning system
+- Git integration with safety protocols
+- Multi-provider LLM support
 
-## 🎯 **Use Cases**
+## Use Cases
 
-- **Daily Development**: Autonomous code improvements
-- **Code Reviews**: AI-powered analysis and suggestions
-- **Refactoring**: Large-scale code modernization
-- **Documentation**: Automatic docs and comments
-- **Bug Fixes**: AI-assisted error resolution
+- **Development Workflow**: Automated code improvements and refactoring
+- **Code Review**: AI-powered analysis and enhancement suggestions
+- **Legacy Modernization**: Large-scale codebase updates
+- **Documentation**: Automated documentation generation
+- **Quality Assurance**: AI-assisted error detection and resolution
 
-## 🔮 **Why It's Revolutionary**
+## Technical Architecture
 
-Unlike other AI coding tools, Aider-Genius:
-1. **Actually edits files** (not just suggestions)
-2. **Uses spatial reasoning** (Jac-OSP innovation)
-3. **Works with FREE models** (no monthly costs)
-4. **Optimizes costs** (proven 30%+ savings)
-5. **Professional quality** (production-ready CLI)
+The system implements a layered architecture combining:
+1. **Spatial Programming**: Advanced Jac-OSP algorithms
+2. **Multi-LLM Integration**: Flexible provider support
+3. **Autonomous Operations**: Context-aware file editing
+4. **Cost Optimization**: Token-efficient processing
+5. **Enterprise Safety**: Comprehensive backup and validation
 
-## 📈 **Technical Stats**
+## System Specifications
 
-- **60+ files** of production code
-- **15,000+ lines** of implementation
-- **5 CLI commands** fully functional
-- **95% system completeness**
-- **$0 monthly cost** with free models
+- **Codebase**: 60+ production files with 15,000+ lines
+- **Commands**: 5 fully functional CLI operations
+- **Completion**: 95% system implementation
+- **Cost Model**: Zero monthly fees with free tier support
 
-## 🛠 **Project Structure**
+## Project Structure
 
 ```
 aider/
-├── cli.py                     # Complete CLI interface
+├── cli.py                     # Command-line interface
 ├── integration/
-│   ├── jac_bridge.py         # Python ↔ Jac integration
-│   ├── file_editor.py        # Autonomous file editing
-│   ├── llm_client.py         # Multi-LLM API client
-│   ├── mtp_interface.py      # Multi-Tool Protocol
-│   └── osp_interface.py      # OSP integration
-└── jac/                      # Jac spatial programs
-    ├── repomap_osp.jac       # Spatial file ranking
-    ├── token_optimizer.jac   # Token cost optimization
+│   ├── jac_bridge.py         # Python-Jac integration layer
+│   ├── file_editor.py        # Autonomous file editing engine
+│   ├── llm_client.py         # Multi-provider LLM client
+│   ├── mtp_interface.py      # Multi-Tool Protocol interface
+│   └── osp_interface.py      # Object-Spatial Programming interface
+└── jac/                      # Spatial programming modules
+    ├── repomap_osp.jac       # Spatial file analysis
+    ├── token_optimizer.jac   # Cost optimization algorithms
     ├── context_gatherer.jac  # Context optimization
-    └── ...                   # Advanced spatial walkers
+    └── ...                   # Additional spatial walkers
 ```
 
-## 🧪 **Testing**
+## Testing
 
 ```bash
-# Test OpenRouter integration
-python openrouter_test.py
+# Verify system functionality
+python system_test.py
 
-# Test the complete system
-aider-genius edit "improve this code" --dry-run
+# Test with dry-run mode
+aider-genius edit "improve code quality" --dry-run
 ```
 
-## 🔮 **Future**
+## Development Roadmap
 
-- Web interface for visual code editing
-- Plugin system for custom walkers
-- Enhanced pattern recognition
-- Team collaboration features
+- Web-based interface for visual code editing
+- Plugin architecture for custom spatial walkers  
+- Enhanced pattern recognition capabilities
+- Team collaboration and workflow integration
 
 ---
 
-**Start using AI-powered autonomous coding today!** 🚀
+**Professional AI-powered autonomous coding solution**
 
 ```bash
-aider-genius edit "make my code better"
+aider-genius edit "enhance code quality"
 ```
