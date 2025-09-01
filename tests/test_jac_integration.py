@@ -1,38 +1,117 @@
 """
 tests/test_jac_integration.py
 
-Unit tests for Python ↔ Jac bridge (mtp_interface, osp_interface, jac_bridge)
+Unit tests for Python ↔ Jac integration components.
+Tests the bridge, interfaces, and integration classes.
 """
 
 import unittest
-from unittest.mock import patch
+import sys
+import os
 
-from aider.integration import jac_bridge
-from aider.integration import osp_interface
-from aider.integration import mtp_interface
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+from aider.integration.jac_bridge import JacBridge
+from aider.integration.osp_interface import OSPInterface
+from aider.integration.mtp_interface import MTPInterface
+from aider.jac_integration import JacIntegration
+from aider.genius import GeniusConfig
+
+class TestJacIntegration(unittest.TestCase):
+    """Test the main Jac integration class."""
+    
+    def setUp(self):
+        """Set up test fixtures."""
+        self.integration = JacIntegration()
+    
+    def test_integration_initialization(self):
+        """Test that JacIntegration initializes correctly."""
+        self.assertIsNotNone(self.integration)
+        self.assertTrue(hasattr(self.integration, 'osp'))
+        self.assertTrue(hasattr(self.integration, 'mtp'))
+        self.assertTrue(hasattr(self.integration, 'bridge'))
+    
+    def test_command_handling(self):
+        """Test command handling functionality."""
+        result = self.integration.handle_command('/jac rank')
+        self.assertIsInstance(result, dict)
+        
+        # Test invalid command
+        result = self.integration.handle_command('/jac invalid')
+        self.assertIn('error', result)
+    
+    def test_status_method(self):
+        """Test get_status method."""
+        status = self.integration.get_status()
+        self.assertIsInstance(status, dict)
+        self.assertIn('available', status)
+        self.assertIn('jac_workspace', status)
 
 class TestJacBridge(unittest.TestCase):
-    def test_jac_bridge_imports(self):
-        """Ensure jac_bridge module can be imported and has expected functions"""
-        self.assertTrue(hasattr(jac_bridge, "execute_jac_command"))
-        self.assertTrue(callable(jac_bridge.execute_jac_command))
+    """Test the Jac bridge functionality."""
+    
+    def setUp(self):
+        """Set up test fixtures."""
+        self.bridge = JacBridge()
+    
+    def test_bridge_initialization(self):
+        """Test that JacBridge initializes correctly."""
+        self.assertIsNotNone(self.bridge)
+        self.assertTrue(hasattr(self.bridge, 'jac_workspace'))
+    
+    def test_test_connection(self):
+        """Test the test_connection method."""
+        result = self.bridge.test_connection()
+        self.assertIsInstance(result, dict)
+        self.assertIn('success', result)
 
-    @patch("aider.integration.mtp_interface.GeniusAgent")
-    def test_mtp_interface_agent(self, mock_agent_class):
-        """Test mtp_interface GeniusAgent integration"""
-        agent = mock_agent_class.return_value
-        agent.execute.return_value = "Mocked result"
-        genius_agent = mtp_interface.GeniusAgent()
-        result = genius_agent.execute("Test command")
-        self.assertEqual(result, "Mocked result")
-        agent.execute.assert_called_once_with("Test command")
+class TestOSPInterface(unittest.TestCase):
+    """Test the OSP interface."""
+    
+    def setUp(self):
+        """Set up test fixtures."""
+        self.osp = OSPInterface()
+    
+    def test_osp_initialization(self):
+        """Test that OSPInterface initializes correctly."""
+        self.assertIsNotNone(self.osp)
+        self.assertTrue(hasattr(self.osp, 'bridge'))
 
-    def test_osp_interface_access(self):
-        """Test that OSP interface can initialize RepoMap"""
-        repomap = osp_interface.RepoMap()
-        self.assertIsNotNone(repomap)
-        self.assertTrue(hasattr(repomap, "nodes"))
-        self.assertIsInstance(repomap.nodes, list)
+class TestMTPInterface(unittest.TestCase):
+    """Test the MTP interface."""
+    
+    def setUp(self):
+        """Set up test fixtures."""
+        self.mtp = MTPInterface()
+    
+    def test_mtp_initialization(self):
+        """Test that MTPInterface initializes correctly."""
+        self.assertIsNotNone(self.mtp)
+        self.assertTrue(hasattr(self.mtp, 'bridge'))
+
+class TestGeniusConfig(unittest.TestCase):
+    """Test the Genius configuration."""
+    
+    def setUp(self):
+        """Set up test fixtures."""
+        self.config = GeniusConfig()
+    
+    def test_config_initialization(self):
+        """Test that GeniusConfig initializes correctly."""
+        self.assertIsNotNone(self.config)
+        self.assertIsInstance(self.config.config, dict)
+        self.assertGreater(len(self.config.config), 0)
+    
+    def test_config_get_set(self):
+        """Test configuration get/set methods."""
+        # Test get
+        value = self.config.get('max_iterations', 0)
+        self.assertIsInstance(value, int)
+        
+        # Test set
+        self.config.set('test_key', 'test_value')
+        self.assertEqual(self.config.get('test_key'), 'test_value')
 
 if __name__ == "__main__":
     unittest.main()

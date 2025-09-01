@@ -37,14 +37,13 @@ class MTPInterface:
             Plan dictionary with ordered steps and metadata
         """
         try:
-            plan = self.bridge.call_walker(
+            plan = self.bridge.execute_script(
                 "planning_walker",
-                "generate_plan",
-                args={"task_description": task_description, "context": context}
+                args={"task": task_description, "context": context}
             )
-            return plan or {}
+            return plan or {"steps": [], "summary": "No plan generated"}
         except JacBridgeError as e:
-            raise MTPInterfaceError(f"Failed to generate plan: {e}")
+            raise MTPInterfaceError(f"Failed to plan task: {e}")
 
     def edit_code(self, file_path: str, instructions: str) -> str:
         """
@@ -58,9 +57,8 @@ class MTPInterface:
             Updated file content
         """
         try:
-            updated_content = self.bridge.call_walker(
+            updated_content = self.bridge.execute_script(
                 "editing_walker",
-                "apply_edits",
                 args={"file_path": file_path, "instructions": instructions}
             )
             return updated_content or ""
@@ -78,14 +76,32 @@ class MTPInterface:
             Validation results including warnings, errors, and recommendations
         """
         try:
-            results = self.bridge.call_walker(
+            validation_result = self.bridge.execute_script(
                 "validation_walker",
-                "validate_file",
                 args={"file_path": file_path}
             )
-            return results or {}
+            return validation_result or {}
         except JacBridgeError as e:
-            raise MTPInterfaceError(f"Failed to validate file {file_path}: {e}")
+            raise MTPInterfaceError(f"Failed to validate {file_path}: {e}")
+
+    def validate_changes(self, files: Optional[List[str]] = None) -> Dict[str, Any]:
+        """
+        Validate recent changes using MTP validation walker.
+
+        Args:
+            files: Optional list of files to validate. If None, validates all changed files.
+
+        Returns:
+            Dict containing validation results
+        """
+        try:
+            validation_result = self.bridge.execute_script(
+                "validation_walker",
+                args={"files": files or []}
+            )
+            return validation_result or {"success": True, "message": "No validation issues found"}
+        except JacBridgeError as e:
+            raise MTPInterfaceError(f"Failed to validate changes: {e}")
 
     def full_autonomous_task(self, task_description: str, context: Optional[str] = None) -> Dict[str, Any]:
         """

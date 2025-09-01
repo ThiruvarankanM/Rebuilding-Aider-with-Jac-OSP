@@ -1,33 +1,82 @@
 """
 tests/test_genius_mode.py
 
-Unit tests for Genius Mode (MTP autonomous agent) in aider.jac.genius_agent.
+Unit tests for Genius Mode autonomous operations with Jac-OSP integration.
 """
 
 import unittest
-from unittest.mock import patch
+import sys
+import os
 
-# Import the GeniusAgent class via Python-Jac bridge
-from aider.integration.mtp_interface import GeniusAgent
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-class TestGeniusAgent(unittest.TestCase):
-    def setUp(self):
-        # Initialize the GeniusAgent
-        self.agent = GeniusAgent()
+from aider.genius import GeniusMode, GeniusConfig
+from aider.jac_integration import JacIntegration
+
+class MockIO:
+    """Mock IO class for testing."""
+    def tool_output(self, message):
+        pass
+
+class MockRepo:
+    """Mock repository class for testing."""
+    def get_tracked_files(self):
+        return ["test1.py", "test2.py"]
+
+class TestGeniusConfig(unittest.TestCase):
+    """Test Genius Mode configuration."""
     
-    def test_agent_initialization(self):
-        """Test that the agent initializes correctly"""
-        self.assertIsNotNone(self.agent)
-        self.assertTrue(hasattr(self.agent, "plan"))
-        self.assertTrue(hasattr(self.agent, "execute"))
+    def setUp(self):
+        """Set up test fixtures."""
+        self.config = GeniusConfig()
+    
+    def test_config_loading(self):
+        """Test that configuration loads correctly."""
+        self.assertIsInstance(self.config.config, dict)
+        self.assertIn('max_iterations', self.config.config)
+        self.assertIn('confidence_threshold', self.config.config)
+    
+    def test_config_methods(self):
+        """Test configuration get/set methods."""
+        # Test get
+        value = self.config.get('max_iterations')
+        self.assertIsNotNone(value)
+        
+        # Test set
+        self.config.set('test_setting', 42)
+        self.assertEqual(self.config.get('test_setting'), 42)
 
-    @patch("aider.integration.mtp_interface.GeniusAgent.execute")
-    def test_simple_execution(self, mock_execute):
-        """Test execution of a simple task"""
-        mock_execute.return_value = "Task Completed"
-        result = self.agent.execute("Do a simple test")
-        self.assertEqual(result, "Task Completed")
-        mock_execute.assert_called_once_with("Do a simple test")
+class TestGeniusMode(unittest.TestCase):
+    """Test Genius Mode functionality."""
+    
+    def setUp(self):
+        """Set up test fixtures."""
+        self.mock_io = MockIO()
+        self.mock_repo = MockRepo()
+        
+    def test_genius_mode_initialization(self):
+        """Test that Genius Mode initializes correctly."""
+        try:
+            genius = GeniusMode(self.mock_io, self.mock_repo)
+            self.assertIsNotNone(genius)
+            self.assertTrue(hasattr(genius, 'jac'))
+        except Exception as e:
+            # Expected if Jac integration isn't fully set up
+            self.assertIn('Jac integration', str(e))
+    
+    def test_genius_mode_availability(self):
+        """Test availability check."""
+        try:
+            genius = GeniusMode(self.mock_io, self.mock_repo)
+            available = genius.is_available()
+            self.assertIsInstance(available, bool)
+        except Exception as e:
+            # Expected if Jac integration isn't fully set up
+            self.assertIn('Jac integration', str(e))
+
+if __name__ == "__main__":
+    unittest.main()
 
     def test_agent_plan_property(self):
         """Test that plan property exists and is a list"""

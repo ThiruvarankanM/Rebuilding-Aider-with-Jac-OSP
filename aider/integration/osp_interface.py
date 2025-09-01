@@ -49,32 +49,33 @@ class OSPInterface:
             List of function names
         """
         try:
-            funcs = self.bridge.call_walker(
+            funcs = self.bridge.execute_script(
                 "repomap_osp",
-                "list_functions_in_file",
-                args={"file_path": file_path}
+                args={"file_path": file_path, "action": "list_functions"}
             )
             return funcs or []
         except JacBridgeError as e:
             raise OSPInterfaceError(f"Failed to list functions for {file_path}: {e}")
 
-    def rank_files(self, strategy: str = "default") -> List[Dict[str, Any]]:
+    def rank_files(self, files: Optional[List[str]] = None, context: Optional[str] = None) -> Dict[str, float]:
         """
         Rank files in the repository based on OSP algorithms.
 
         Args:
-            strategy: Ranking strategy, e.g., "default", "complexity", "impact"
+            files: List of files to rank. If None, ranks all files.
+            context: Optional context for ranking
 
         Returns:
-            List of dicts with file name and score
+            Dict mapping file paths to ranking scores
         """
         try:
-            ranked_files = self.bridge.call_walker(
+            rankings = self.bridge.execute_script(
                 "ranking_algorithms",
-                "rank_files",
-                args={"strategy": strategy}
+                args={"files": files or [], "context": context}
             )
-            return ranked_files or []
+            return rankings or {}
+        except JacBridgeError as e:
+            raise OSPInterfaceError(f"Failed to rank files: {e}")
         except JacBridgeError as e:
             raise OSPInterfaceError(f"Failed to rank files: {e}")
 

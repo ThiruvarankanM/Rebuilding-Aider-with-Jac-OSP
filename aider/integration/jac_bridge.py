@@ -32,28 +32,31 @@ class JacBridge:
         """
         self.jac_workspace = jac_workspace or os.getcwd()
 
-    def _run_jac_command(self, walker: str, func: str, args: Optional[Dict[str, Any]] = None) -> Any:
+    def _run_jac_command(self, jac_file: str, args: Optional[Dict[str, Any]] = None) -> Any:
         """
-        Run a Jac walker function and return its output.
+        Run a Jac file and return its output.
 
         Args:
-            walker: Name of the Jac walker file (without .jac)
-            func: Function name inside the walker
-            args: Dictionary of arguments to pass
+            jac_file: Name of the Jac file (with or without .jac extension)
+            args: Dictionary of arguments to pass (optional)
 
         Returns:
             The parsed output from Jac (JSON-compatible)
         """
-        args_json = json.dumps(args or {})
-        cmd = [
-            JAC_RUNTIME,
-            "-w", walker,
-            "-f", func,
-            "-a", args_json
-        ]
+        # Ensure .jac extension
+        if not jac_file.endswith('.jac'):
+            jac_file += '.jac'
+        
+        # Build jac run command
+        cmd = [JAC_RUNTIME, "run", jac_file]
 
         try:
-            result = subprocess.run(cmd, capture_output=True, text=True, cwd=self.jac_workspace, check=True)
+            # Set environment variables for arguments if provided
+            env = os.environ.copy()
+            if args:
+                env['JAC_ARGS'] = json.dumps(args)
+            
+            result = subprocess.run(cmd, capture_output=True, text=True, cwd=self.jac_workspace, check=True, env=env)
             output = result.stdout.strip()
             if not output:
                 return None
@@ -64,19 +67,54 @@ class JacBridge:
         except subprocess.CalledProcessError as e:
             raise JacBridgeError(f"Jac command failed: {e.stderr.strip()}") from e
 
+    def execute_script(self, jac_file: str, args: Optional[Dict[str, Any]] = None) -> Any:
+        """
+        Execute a Jac script file.
+
+        Args:
+            jac_file: Name of the Jac file to execute
+            args: Optional dictionary of arguments
+
+        Returns:
+            Result of the Jac script execution
+        """
+        return self._run_jac_command(jac_file, args)
+
     def call_walker(self, walker_name: str, function_name: str, args: Optional[Dict[str, Any]] = None) -> Any:
         """
-        Public method to call a Jac walker function.
+        Execute a Jac walker file (legacy method name for compatibility).
 
         Args:
             walker_name: Name of the Jac walker file (without .jac extension)
-            function_name: Function inside the walker
+            function_name: Function inside the walker (not used with jac run)
             args: Optional dictionary of arguments
 
         Returns:
             Result of the Jac function
         """
-        return self._run_jac_command(walker_name, function_name, args)
+        return self.execute_script(walker_name, args)
+
+    def test_connection(self) -> Dict[str, Any]:
+        """
+        Test the Jac bridge connection.
+
+        Returns:
+            Dict with success status and connection info
+        """
+        try:
+            # Test by running a simple Jac command
+            result = subprocess.run([JAC_RUNTIME, "--version"], capture_output=True, text=True, check=True)
+            return {
+                "success": True,
+                "jac_version": result.stdout.strip(),
+                "workspace": self.jac_workspace
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e),
+                "workspace": self.jac_workspace
+            }
 
     def call_multiple(self, calls: List[Dict[str, Any]]) -> List[Any]:
         """
