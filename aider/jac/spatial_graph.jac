@@ -2,70 +2,125 @@
 # SpatialGraph implementation for OSP RepoMap
 
 node SpatialGraph {
-    has map[CodeFile, set[CodeFile]] adjacency = {};
+    has adjacency: dict = {};
     
     # Add a node to the graph
-    walker add_node(node: CodeFile):
-        if node not in here.adjacency:
-            here.adjacency[node] = set()
-            std.log(f"Node added: {node.filename}")
-        else:
-            std.warn(f"Node {node.filename} already exists in graph")
+    def add_node(node_name: str) {
+        if node_name not in self.adjacency {
+            self.adjacency[node_name] = [];
+            print("Node added: " + node_name);
+        } else {
+            print("Node " + node_name + " already exists in graph");
+        }
+    }
 
-    # Remove a node and all its edges
-    walker remove_node(node: CodeFile):
-        if node not in here.adjacency:
-            std.warn(f"Node {node.filename} not found in graph")
-            return
-        # Remove edges from other nodes
-        for other_node in here.adjacency.keys():
-            here.adjacency[other_node].discard(node)
-        # Remove node itself
-        here.adjacency.pop(node)
-        std.log(f"Node removed: {node.filename}")
+        # Remove a node and all its edges
+    def remove_node(node: str) {
+        if node in self.adjacency {
+            self.adjacency.pop(node);
+            for key in self.adjacency {
+                neighbors = self.adjacency[key];
+                if node in neighbors {
+                    neighbors.remove(node);
+                }
+            }
+        }
+    }
 
-    # Add a directed edge from source to target
-    walker add_edge(source: CodeFile, target: CodeFile):
-        if source not in here.adjacency:
-            here.add_node(source)
-        if target not in here.adjacency:
-            here.add_node(target)
-        here.adjacency[source].add(target)
-        std.log(f"Edge added: {source.filename} -> {target.filename}")
+    # Add an edge between two nodes
+    def add_edge(source: str, target: str) {
+        if source in self.adjacency and target in self.adjacency {
+            neighbors = self.adjacency[source];
+            neighbors.append(target);
+        }
+    }
 
-    # Remove an edge
-    walker remove_edge(source: CodeFile, target: CodeFile):
-        if source in here.adjacency:
-            here.adjacency[source].discard(target)
-            std.log(f"Edge removed: {source.filename} -> {target.filename}")
+    # Remove an edge between two nodes
+    def remove_edge(source: str, target: str) {
+        if source in self.adjacency {
+            neighbors = self.adjacency[source];
+            if target in neighbors {
+                neighbors.remove(target);
+            }
+        }
+    }
 
     # Get neighbors of a node
-    walker get_neighbors(node: CodeFile) -> list[CodeFile]:
-        if node not in here.adjacency:
-            return []
-        return list(here.adjacency[node])
+    def get_neighbors(node: str) -> list {
+        if node in self.adjacency {
+            return self.adjacency[node];
+        }
+        return [];
+    }
 
     # Check if a path exists between two nodes (DFS)
-    walker has_path(source: CodeFile, target: CodeFile) -> bool:
-        visited = set()
-        stack = [source]
-        while stack:
-            current = stack.pop()
-            if current == target:
-                return True
-            if current not in visited:
-                visited.add(current)
-                stack.extend(here.adjacency.get(current, set()))
-        return False
+    def has_path(source: str, target: str) -> bool {
+        if source not in self.adjacency or target not in self.adjacency {
+            return False;
+        }
+        
+        visited = [];
+        stack = [source];
+        
+        while len(stack) > 0 {
+            current = stack.pop();
+            if current == target {
+                return True;
+            }
+            if current not in visited {
+                visited.append(current);
+                neighbors = self.adjacency[current];
+                for neighbor in neighbors {
+                    stack.append(neighbor);
+                }
+            }
+        }
+        return False;
+    }
 
     # Get all nodes in the graph
-    walker get_all_nodes() -> list[CodeFile]:
-        return list(here.adjacency.keys())
+    def get_all_nodes() -> list {
+        nodes = [];
+        for node in self.adjacency {
+            nodes.append(node);
+        }
+        return nodes;
+    }
 
     # Debug: print adjacency
-    walker print_graph():
-        for node in here.adjacency.keys():
-            neighbors = here.adjacency[node]
-            neighbor_paths = [n.filename for n in neighbors]
-            std.log(f"{node.filename} -> {neighbor_paths}")
+    def print_graph() {
+        print("Graph structure:");
+        for node in self.adjacency {
+            neighbors = self.adjacency[node];
+            print(node + " -> " + str(neighbors));
+        }
+    }
+}
+
+with entry {
+    graph = SpatialGraph();
+    print("Spatial Graph Demo:");
+    
+    # Test adding nodes
+    graph.add_node("file1.py");
+    graph.add_node("file2.py");
+    graph.add_node("file3.py");
+    
+    # Test adding edges
+    graph.add_edge("file1.py", "file2.py");
+    graph.add_edge("file2.py", "file3.py");
+    graph.add_edge("file1.py", "file3.py");
+    
+    # Test path checking
+    has_path_result = graph.has_path("file1.py", "file3.py");
+    print("Path from file1.py to file3.py exists: " + str(has_path_result));
+    
+    # Print graph structure
+    graph.print_graph();
+    
+    # Test getting neighbors
+    neighbors = graph.get_neighbors("file1.py");
+    print("Neighbors of file1.py: " + str(neighbors));
+    
+    print("Spatial Graph demo completed!");
 }
