@@ -64,8 +64,7 @@ setup(
     entry_points={
         "console_scripts": [
             "aider=aider.__main__:main",
-            "aider-genius=aider.main:main",  # Genius Mode entry point
-            "aider-demo=simple_demo:main",   # Competition demo entry point
+            "aider-genius=aider.cli:main",  # Complete CLI interface
         ],
     },
     include_package_data=True,

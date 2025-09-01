@@ -72,7 +72,7 @@ node RepoMap {
 }
 
 with entry {
-    repo = RepoMapOSP();
+    repo = RepoMap();
     
     # Test basic operations
     repo.add_file("main.py", "print('hello')");
@@ -82,4 +82,8 @@ with entry {
     repo.build_graph();
     files = repo.list_all_files();
     deps = repo.find_dependencies("main.py");
+    
+    print("OSP RepoMap Execution Successful!");
+    print(f"Files analyzed: {len(files)}");
+    print(f"Dependencies found: {len(deps)}");
 }
