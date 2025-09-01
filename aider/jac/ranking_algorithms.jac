@@ -11,7 +11,7 @@ walker RankingAlgorithms {
     has results: list = [];
 
     # Frequency-based ranking
-    can frequency_rank() {
+    def frequency_rank() -> dict {
         freq_table = {};
         nodes = ["node1", "node2", "node3", "node1"];
         
@@ -33,7 +33,7 @@ walker RankingAlgorithms {
     }
 
     # Dependency-based ranking
-    can dependency_rank() {
+    def dependency_rank() -> dict {
         dep_scores = {};
         nodes = ["node1", "node2", "node3"];
         
@@ -52,7 +52,7 @@ walker RankingAlgorithms {
     }
 
     # Hybrid ranking combining frequency and dependency
-    can hybrid_rank() {
+    def hybrid_rank() -> dict {
         freq_scores = self.frequency_rank();
         dep_scores = self.dependency_rank();
         hybrid_scores = {};
@@ -74,7 +74,7 @@ walker RankingAlgorithms {
     }
 
     # Get top ranked nodes
-    can get_top_ranked() {
+    def get_top_ranked() -> list {
         print("Getting top ranked nodes...");
         scores = self.hybrid_rank();
         top_nodes = [];
@@ -88,7 +88,7 @@ walker RankingAlgorithms {
     }
 
     # Run all ranking algorithms
-    can run_all_rankings() {
+    def run_all_rankings() {
         print("Running all ranking algorithms:");
         self.get_top_ranked();
         print("All rankings completed!");
@@ -96,7 +96,7 @@ walker RankingAlgorithms {
 }
 
 with entry {
-    ra = spawn here RankingAlgorithms;
+    ra = RankingAlgorithms();
     print("Ranking Algorithms Demo:");
     ra.run_all_rankings();
 }
