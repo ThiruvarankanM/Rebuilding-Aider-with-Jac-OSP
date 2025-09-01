@@ -8,9 +8,6 @@ node SpatialGraph {
     def add_node(node_name: str) {
         if node_name not in self.adjacency {
             self.adjacency[node_name] = [];
-            print("Node added: " + node_name);
-        } else {
-            print("Node " + node_name + " already exists in graph");
         }
     }
 
@@ -89,7 +86,6 @@ node SpatialGraph {
 
     # Debug: print adjacency
     def print_graph() {
-        print("Graph structure:");
         for node in self.adjacency {
             neighbors = self.adjacency[node];
             print(node + " -> " + str(neighbors));
@@ -99,28 +95,19 @@ node SpatialGraph {
 
 with entry {
     graph = SpatialGraph();
-    print("Spatial Graph Demo:");
     
-    # Test adding nodes
+    # Test basic functionality
     graph.add_node("file1.py");
     graph.add_node("file2.py");
     graph.add_node("file3.py");
     
-    # Test adding edges
     graph.add_edge("file1.py", "file2.py");
     graph.add_edge("file2.py", "file3.py");
     graph.add_edge("file1.py", "file3.py");
     
     # Test path checking
     has_path_result = graph.has_path("file1.py", "file3.py");
-    print("Path from file1.py to file3.py exists: " + str(has_path_result));
     
-    # Print graph structure
+    # Display results
     graph.print_graph();
-    
-    # Test getting neighbors
-    neighbors = graph.get_neighbors("file1.py");
-    print("Neighbors of file1.py: " + str(neighbors));
-    
-    print("Spatial Graph demo completed!");
 }

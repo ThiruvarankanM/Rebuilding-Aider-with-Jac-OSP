@@ -9,17 +9,14 @@ node ValidationWalker {
     def add_validation_task(file_path: str, validation_type: str) {
         task = {"file": file_path, "type": validation_type};
         self.validation_queue.append(task);
-        print("Added " + validation_type + " validation task for " + file_path);
     }
 
     # Execute all queued validations
     def execute_validations() {
-        print("Executing " + str(len(self.validation_queue)) + " validation tasks...");
         for task in self.validation_queue {
             self.validate_task(task);
         }
         self.validation_queue = [];
-        print("All validations executed and queue cleared.");
     }
 
     # Validate a single task
@@ -29,12 +26,9 @@ node ValidationWalker {
         if "type" in task {
             validation_type = task["type"];
         }
-        
-        print("Validating " + file_path + " | Type: " + validation_type);
 
         # Simulate file existence check
         if not self.file_exists(file_path) {
-            print("File does not exist: " + file_path);
             return;
         }
 
@@ -47,25 +41,22 @@ node ValidationWalker {
             self.validate_style(code, file_path);
         } elif validation_type == "tests" {
             self.run_tests(file_path);
-        } else {
-            print("Unknown validation type: " + validation_type);
         }
     }
 
     # Simple syntax check (simulated)
     def validate_syntax(code: str, file_path: str) {
-        print("Syntax check passed for " + file_path);
         # In real implementation would check Python/Jac syntax
     }
 
     # Style check (placeholder)
     def validate_style(code: str, file_path: str) {
-        print("Style check passed for " + file_path + " (placeholder)");
+        # In real implementation would run style checkers
     }
 
     # Run tests (placeholder)
     def run_tests(file_path: str) {
-        print("Running tests for " + file_path + " (placeholder)");
+        # In real implementation would execute test suites
     }
 
     # Helper: simulate file existence check
@@ -82,16 +73,13 @@ node ValidationWalker {
 
     # Preview queued validations
     def preview_validations() {
-        print("Previewing validation queue:");
-        i = 0;
         for task in self.validation_queue {
             file_name = task["file"];
             task_type = "syntax";
             if "type" in task {
                 task_type = task["type"];
             }
-            print("  " + str(i + 1) + ". File: " + file_name + ", Type: " + task_type);
-            i += 1;
+            print("File: " + file_name + ", Type: " + task_type);
         }
     }
 
@@ -104,13 +92,11 @@ node ValidationWalker {
             }
         }
         self.validation_queue = new_queue;
-        print("Removed validations for file " + file_path);
     }
 
     # Clear all validation tasks
     def clear_queue() {
         self.validation_queue = [];
-        print("Cleared all validation tasks.");
     }
 
     # Get queue status
@@ -141,26 +127,13 @@ node ValidationWalker {
 
 with entry {
     validator = ValidationWalker();
-    print("ValidationWalker Demo:");
     
-    # Test adding validation tasks
+    # Test validation workflow
     validator.add_validation_task("file1.py", "syntax");
     validator.add_validation_task("file2.py", "style");
     validator.add_validation_task("file3.py", "tests");
     
-    # Preview queue
     validator.preview_validations();
-    
-    # Check queue status
     status = validator.get_queue_status();
-    print("Queue status: " + str(status));
-    
-    # Execute all validations
     validator.execute_validations();
-    
-    # Check empty queue
-    status_after = validator.get_queue_status();
-    print("Queue status after execution: " + str(status_after));
-    
-    print("ValidationWalker demo completed!");
 }

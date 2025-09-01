@@ -16,11 +16,9 @@ node TokenOptimizer {
     def process(filename: str, content: str) -> str {
         approx_tokens = len(content);  # Rough proxy: characters ~ tokens
         if approx_tokens + self.used_tokens > self.budget_limit - self.safety_margin {
-            print("File " + filename + " too large, compressing...");
             return self.compress(filename, content);
         } else {
             self.used_tokens += approx_tokens;
-            print("Accepted file " + filename + " (tokens used: " + str(self.used_tokens) + ")");
             return content;
         }
     }
@@ -30,7 +28,6 @@ node TokenOptimizer {
         compressed_tokens = int(len(content) * 0.5);
         self.used_tokens += compressed_tokens;
         compressed_content = "[COMPRESSED CONTENT of " + filename + "]";
-        print("Compressed " + filename + " (tokens used: " + str(self.used_tokens) + ")");
         return compressed_content;
     }
 
@@ -54,7 +51,6 @@ node TokenOptimizer {
     # Reset token counter
     def reset_tokens() {
         self.used_tokens = 0;
-        print("Token counter reset");
     }
 
     # Check if we're within budget
@@ -65,29 +61,16 @@ node TokenOptimizer {
 
 with entry {
     optimizer = TokenOptimizer();
-    print("TokenOptimizer Demo:");
-    print("Budget limit: " + str(optimizer.budget_limit));
     
     # Test processing small file
-    small_content = "def hello(): print('world')";
+    small_content = "def hello(): return 'world'";
     result1 = optimizer.process("small.py", small_content);
-    print("Result 1: " + result1);
     
     # Test processing large file
     large_content = "# Very large file content" * 200;  # Simulate large file
     result2 = optimizer.process("large.py", large_content);
-    print("Result 2 (truncated): " + result2[:50] + "...");
     
     # Test summarization
     func_summary = optimizer.summarize_function("my_function", ["param1", "param2"]);
-    print("Function summary: " + func_summary);
-    
     class_summary = optimizer.summarize_class("MyClass", ["method1", "method2", "method3"]);
-    print("Class summary: " + class_summary);
-    
-    # Check usage
-    print("Total tokens used: " + str(optimizer.get_token_usage()));
-    print("Within budget: " + str(optimizer.within_budget()));
-    
-    print("TokenOptimizer demo completed!");
 }
