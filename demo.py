@@ -1,6 +1,21 @@
 #!/usr/bin/env python3
 """
-COMPETITION DEMO: Rebuilding Aider with Jac-OSP
+COMPETITION Dclass AiderJacDemo:
+    """Competition demo showcasing Aider + Jac-OSP integration"""
+    
+    def __init__(self):
+        self.console = console  # Initialize console attribute
+        console.print("[bold blue]🚀 Initializing Aider Genius Mode Demo[/bold blue]")
+        
+        if JAC_AVAILABLE:
+            self.bridge = JacBridge()
+            self.osp = OSPInterface()
+            self.sendchat = SendChatManager()
+        else:
+            # Fallback for demo purposes
+            self.bridge = None
+            self.osp = None
+            self.sendchat = None Aider with Jac-OSP
 ================================================
 Live demonstration of Jac Object-Spatial Programming integration with Aider.
 
@@ -23,9 +38,18 @@ from rich.progress import track
 # Add current directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from aider.jac_integration import JacIntegration
-from aider.genius import GeniusConfig
-from aider.integration.jac_bridge import JacBridge
+# Import actual system components
+try:
+    from aider.integration.jac_bridge import JacBridge
+    from aider.integration.osp_interface import OSPInterface
+    from aider.sendchat import SendChatManager
+    from aider.models import ModelSettings
+    from aider.repo import GitRepo
+    from aider.commands import Commands
+    JAC_AVAILABLE = True
+except ImportError as e:
+    print(f"⚠️  Some modules not available: {e}")
+    JAC_AVAILABLE = False
 
 console = Console()
 
@@ -33,9 +57,17 @@ class AiderJacDemo:
     """Competition demo class for Aider-Jac integration."""
     
     def __init__(self):
-        self.console = console
-        self.integration = JacIntegration()
-        self.config = GeniusConfig()
+        console.print("[bold blue]🚀 Initializing Aider Genius Mode Demo[/bold blue]")
+        
+        if JAC_AVAILABLE:
+            self.bridge = JacBridge()
+            self.osp = OSPInterface()
+            self.sendchat = SendChatManager()
+        else:
+            # Fallback for demo purposes
+            self.bridge = None
+            self.osp = None
+            self.sendchat = None
         
     def print_header(self):
         """Print demo header."""

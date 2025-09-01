@@ -6,58 +6,83 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
-    name="aider",
-    version="1.0.0",
-    description="Aider: AI-powered code assistant with OSP & Genius mode (MTP) integration",
+    name="aider-jac-osp",
+    version="2.0.0",
+    description="Aider: AI-powered coding assistant rebuilt with Jac Object-Spatial Programming and Genius Mode",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author="Thiruvarankan",
+    author="Thiruvarankan M",
     author_email="thiru07official@gmail.com",
     url="https://github.com/ThiruvarankanM/Rebuilding-Aider-with-Jac-OSP",
     packages=find_packages(exclude=["tests*", "examples*", "docs*", "scripts*"]),
-    python_requires=">=3.11",
+    python_requires=">=3.8",
     install_requires=[
-        "python-dateutil>=2.8.2",
-        "pydantic>=2.5.1",
+        # Core dependencies
         "rich>=13.5.0",
-        "requests>=2.31.0",
-        "PyYAML>=6.0",
-        "litellm>=0.4.0",
-        "transformers>=4.35.0",
-        "torch>=2.1.0",
-        "beautifulsoup4>=4.12.2",
-        "lxml>=4.9.3",
-        "selenium>=5.9.0",
-        "numpy>=1.27.0",
-        "pandas>=2.1.1",
-        "pytest>=8.2.0",
-        "pytest-mock>=3.12.0",
-        "unittest-xml-reporting>=3.0.4",
-        "jac-lang>=1.0.0",
+        "prompt-toolkit>=3.0.0",
+        "configargparse>=1.7.0",
+        "pyperclip>=1.8.0",
+        "pillow>=9.0.0",
+        
+        # AI/LLM dependencies
+        "litellm>=1.0.0",
+        "openai>=1.0.0",
+        "anthropic>=0.7.0",
+        "tiktoken>=0.7.0",
+        
+        # Code analysis
+        "tree-sitter>=0.20.0",
+        "gitpython>=3.1.0",
+        
+        # Async operations
+        "aiofiles>=23.0.0",
+        
+        # Data handling
+        "pydantic>=2.0.0",
+        "json5>=0.9.0",
+        "pyyaml>=6.0.0",
+        
+        # CLI tools
+        "shtab>=1.6.0",
+        "python-dotenv>=1.0.0",
     ],
     extras_require={
-        "dev": [
-            "black>=24.8.0",
-            "isort>=6.1.0",
-            "flake8>=7.0.0",
+        "jac": [
+            "jaclang>=0.7.0",  # Jac language support
         ],
-        "docs": [
-            "mkdocs>=1.6.0",
-            "mkdocs-material>=9.0.0",
+        "dev": [
+            "black>=24.0.0",
+            "isort>=5.12.0",
+            "flake8>=6.0.0",
+            "pytest>=7.0.0",
+            "pytest-mock>=3.10.0",
+        ],
+        "demo": [
+            "rich>=13.5.0",  # For competition demo visuals
         ],
     },
     entry_points={
         "console_scripts": [
             "aider=aider.__main__:main",
+            "aider-genius=aider.main:main",  # Genius Mode entry point
+            "aider-demo=simple_demo:main",   # Competition demo entry point
         ],
     },
     include_package_data=True,
     classifiers=[
+        "Development Status :: 4 - Beta",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9", 
+        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
-        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3.12",
+        "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Code Generators",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+        "Topic :: Text Processing :: Linguistic",
     ],
-    keywords="AI assistant LLM code OSP MTP Jac automation",
+    keywords="AI assistant LLM code OSP MTP Jac automation spatial-programming genius-mode",
 )

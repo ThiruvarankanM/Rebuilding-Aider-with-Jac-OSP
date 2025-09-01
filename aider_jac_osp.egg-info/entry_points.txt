@@ -1,0 +1,4 @@
+[console_scripts]
+aider = aider.__main__:main
+aider-demo = simple_demo:main
+aider-genius = aider.main:main
