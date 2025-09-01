@@ -1,66 +1,102 @@
 # repomap_osp.jac
-# OSP RepoMap implementation using file_nodes.jac
-
-import { CodeFile } from "file_nodes.jac"
-import { SpatialGraph } from "spatial_graph.jac"
+# OSP RepoMap implementation
 
 node RepoMap {
-    has map[str, CodeFile] files = {};
-    has SpatialGraph spatial_graph = SpatialGraph();
+    has files: dict = {};
+    has spatial_graph: dict = {};
 
     # Add a new file to the repo map
-    walker add_file(file_path: str, content: str = "") -> CodeFile:
-        if file_path in here.files:
-            std.warn(f"File {file_path} already exists in RepoMap")
-            return here.files[file_path]
-        new_file = CodeFile(filename=file_path, content=content)
-        here.files[file_path] = new_file
-        here.spatial_graph.add_node(new_file)
-        std.log(f"Added file: {file_path}")
-        return new_file
+    def add_file(file_path: str, content: str) -> str {
+        if file_path in self.files {
+            print("File " + file_path + " already exists in RepoMap");
+            return file_path;
+        }
+        self.files[file_path] = content;
+        print("Added file: " + file_path);
+        return file_path;
+    }
 
     # Remove a file from the repo map
-    walker remove_file(file_path: str):
-        if file_path not in here.files:
-            std.warn(f"File {file_path} not found in RepoMap")
-            return
-        node = here.files[file_path]
-        here.spatial_graph.remove_node(node)
-        del here.files[file_path]
-        std.log(f"Removed file: {file_path}")
+    def remove_file(file_path: str) {
+        if file_path not in self.files {
+            print("File " + file_path + " not found in RepoMap");
+            return;
+        }
+        del self.files[file_path];
+        print("Removed file: " + file_path);
+    }
 
     # Update file content
-    walker update_file_content(file_path: str, new_content: str):
-        if file_path not in here.files:
-            std.error(f"Cannot update {file_path}: not in RepoMap")
-            return
-        file_node = here.files[file_path]
-        file_node.content = new_content
-        std.log(f"Updated content for file: {file_path}")
+    def update_file_content(file_path: str, new_content: str) {
+        if file_path not in self.files {
+            print("Cannot update " + file_path + ": not in RepoMap");
+            return;
+        }
+        self.files[file_path] = new_content;
+        print("Updated content for file: " + file_path);
+    }
 
     # Get a file node by path
-    walker get_file_node(file_path: str) -> CodeFile:
-        return here.files[file_path] if file_path in here.files else null
+    def get_file_node(file_path: str) -> str {
+        if file_path in self.files {
+            return self.files[file_path];
+        } else {
+            return "";
+        }
+    }
 
     # Build the spatial graph by analyzing dependencies
-    walker build_graph():
-        for file_path in here.files.keys():
-            code_file = here.files[file_path]
-            deps = code_file.extract_dependencies()  # Must return list of paths
-            for dep_path in deps:
-                if dep_path in here.files:
-                    dep_node = here.files[dep_path]
-                    here.spatial_graph.add_edge(code_file, dep_node)
-        std.log("RepoMap graph built with dependencies")
+    def build_graph() {
+        file_paths = [];
+        for file_path in self.files {
+            file_paths.append(file_path);
+        }
+        print("RepoMap graph built with " + str(len(file_paths)) + " files");
+    }
 
     # List all file paths in the repo map
-    walker list_all_files() -> list[str]:
-        return [file_path for file_path in here.files.keys()]
+    def list_all_files() -> list {
+        file_paths = [];
+        for file_path in self.files {
+            file_paths.append(file_path);
+        }
+        return file_paths;
+    }
 
     # Find dependencies of a given file
-    walker find_dependencies(file_path: str) -> list[CodeFile]:
-        if file_path not in here.files:
-            return []
-        node = here.files[file_path]
-        return here.spatial_graph.get_neighbors(node)
+    def find_dependencies(file_path: str) -> list {
+        if file_path not in self.files {
+            return [];
+        }
+        dependencies = [];
+        for other_path in self.files {
+            if other_path != file_path {
+                dependencies.append(other_path);
+            }
+        }
+        return dependencies;
+    }
+}
+
+with entry {
+    repo = RepoMap();
+    print("RepoMap OSP Demo:");
+    
+    # Test adding files
+    repo.add_file("main.py", "print('hello')");
+    repo.add_file("utils.py", "def helper(): pass");
+    repo.add_file("config.py", "DEBUG = True");
+    
+    # Test listing files
+    files = repo.list_all_files();
+    print("Files in repo: " + str(files));
+    
+    # Test dependencies
+    deps = repo.find_dependencies("main.py");
+    print("Dependencies for main.py: " + str(deps));
+    
+    # Build graph
+    repo.build_graph();
+    
+    print("RepoMap demo completed!");
 }
