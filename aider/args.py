@@ -10,24 +10,21 @@ import shtab
 
 # Fixed imports - using absolute imports to avoid relative import issues
 try:
-    from Aider import __version__
-    from Aider.args_formatter import (
-        DotEnvFormatter,
-        MarkdownHelpFormatter,
-        YamlHelpFormatter,
-    )
-    from Aider.deprecated import add_deprecated_model_args
-    from Aider.dump import dump  # noqa: F401
-except ImportError:
-    # Fallback for development/testing
     from aider import __version__
     from aider.args_formatter import (
         DotEnvFormatter,
-        MarkdownHelpFormatter,
-        YamlHelpFormatter,
+        GitFormatter,
+        MainCommands,
+        ModelCommands,
+        UndocumentedCommands,
     )
-    from aider.deprecated import add_deprecated_model_args
-    from aider.dump import dump  # noqa: F401
+    from aider.help import Help
+    from aider.help_pats import set_help_pattern
+    from aider.models import MODEL_METADATA
+    from aider.version import VERSION
+except ImportError:
+    # Fallback for development
+    __version__ = "development"
 
 
 def resolve_aiderignore_path(path_str, git_root=None):

@@ -46,7 +46,7 @@ class AiderGeniusCLI:
             # Initialize LLM Client (will handle API key loading)
             self.llm_client = LLMClient()
             
-            console.print("✓ All components initialized successfully")
+            console.print("✨ [green]All components initialized successfully[/green]")
         except Exception as e:
             console.print(f"Warning: Component initialization issue - {e}")
     
@@ -116,9 +116,12 @@ class AiderGeniusCLI:
         if not files:
             return {"error": "No relevant files identified"}
         
+        console.print(f"🔧 Targeting files: {files}")
+        
         # Execute autonomous editing
         try:
             result = self.auto_editor.autonomous_edit(task, files)
+            console.print(f"🔍 Autonomous edit result: {result}")
             return result
         except Exception as e:
             console.print(f"✗ Autonomous editing failed: {e}")
@@ -159,35 +162,47 @@ class AiderGeniusCLI:
         return True
 
 def create_parser():
-    """Create command line argument parser"""
+    """Create command line argument parser with enhanced formatting"""
     parser = argparse.ArgumentParser(
-        description="Aider-Genius: AI coding assistant with Jac-OSP",
-        epilog="Examples:\n"
-               "  aider-genius analyze\n"
-               "  aider-genius optimize main.py\n"
-               "  aider-genius edit 'add error handling'\n"
-               "  aider-genius setup",
+        description="🧠 Aider-Genius: Professional AI Coding Assistant with Jac-OSP",
+        epilog="""
+╭─ EXAMPLES ─────────────────────────────────────────╮
+│                                                    │
+│  📊 aider-genius analyze                           │
+│      → Analyze project with OSP spatial ranking   │
+│                                                    │
+│  💰 aider-genius optimize main.py                  │
+│      → Optimize token usage for cost efficiency   │
+│                                                    │
+│  🤖 aider-genius edit 'add error handling'        │
+│      → Autonomous code editing with AI            │
+│                                                    │
+│  ⚙️  aider-genius setup                            │
+│      → Configure API keys and system settings     │
+│                                                    │
+╰────────────────────────────────────────────────────╯
+        """,
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
     
     parser.add_argument('command', 
                        choices=['analyze', 'optimize', 'edit', 'setup'],
-                       help='Command to execute')
+                       help='🎯 Command to execute')
     
     parser.add_argument('target', nargs='?',
-                       help='Target file or task description')
+                       help='📁 Target file or task description')
     
     parser.add_argument('--files', nargs='+',
-                       help='Specific files to target')
+                       help='📄 Specific files to target')
     
     parser.add_argument('--dir', 
-                       help='Target directory (default: current)')
+                       help='📂 Target directory (default: current)')
     
     parser.add_argument('--dry-run', action='store_true',
-                       help='Show what would be done without making changes')
+                       help='🔍 Show what would be done without making changes')
     
     parser.add_argument('--verbose', '-v', action='store_true',
-                       help='Verbose output')
+                       help='📝 Verbose output')
     
     return parser
 
@@ -200,9 +215,11 @@ def main():
     cli = AiderGeniusCLI()
     
     console.print(Panel.fit(
-        "AIDER-GENIUS: Autonomous AI Coding Assistant\n"
-        "Powered by Jac Object-Spatial Programming",
-        style="bold cyan"
+        "[bold cyan]🧠 AIDER-GENIUS[/bold cyan]\n"
+        "[green]Autonomous AI Coding Assistant[/green]\n"
+        "[dim]Powered by Jac Object-Spatial Programming[/dim]",
+        style="bold blue",
+        border_style="cyan"
     ))
     
     # Execute commands
@@ -214,24 +231,57 @@ def main():
         result = cli.analyze_project(target_dir)
         
         if "error" not in result:
-            console.print("[bold green]OSP Analysis Results:[/bold green]")
+            console.print("\n📊 [bold green]OSP SPATIAL ANALYSIS RESULTS[/bold green]")
+            console.print("─" * 60)
             if "ranked_files" in result:
                 for i, file_info in enumerate(result["ranked_files"][:5], 1):
-                    console.print(f"   {i}. {file_info['path']} (relevance: {file_info['relevance']:.2f})")
+                    relevance = file_info['relevance']
+                    file_path = file_info['path']
+                    
+                    # Color-code relevance scores
+                    if relevance >= 0.7:
+                        color = "bright_green"
+                        icon = "🟢"
+                    elif relevance >= 0.4:
+                        color = "yellow"
+                        icon = "🟡"
+                    else:
+                        color = "bright_black"
+                        icon = "⚪"
+                    
+                    console.print(f"  {icon} [{color}]{i:2d}. {file_path}[/{color}]")
+                    console.print(f"     └─ Relevance: [{color}]{relevance:.2f}[/{color}] | Lines: {file_info.get('lines', 'N/A')}")
+            
+            console.print(f"\n💡 [dim]Analyzed {result.get('total_files_analyzed', 'N/A')} files total[/dim]")
         else:
-            console.print(f"✗ Analysis failed: {result['error']}")
+            console.print(f"❌ [red]Analysis failed: {result['error']}[/red]")
     
     elif args.command == 'optimize':
         target_file = args.target
         result = cli.optimize_tokens(target_file)
         
         if "error" not in result:
-            console.print("[bold green]Token Optimization Results:[/bold green]")
-            console.print(f"   Original: {result.get('original_tokens', 'N/A')} tokens")
-            console.print(f"   Optimized: {result.get('optimized_tokens', 'N/A')} tokens") 
-            console.print(f"   Savings: {result.get('savings_percent', 'N/A'):.1f}%")
+            console.print("\n💰 [bold cyan]TOKEN OPTIMIZATION RESULTS[/bold cyan]")
+            console.print("─" * 50)
+            
+            original = result.get('original_tokens', 'N/A')
+            optimized = result.get('optimized_tokens', 'N/A')
+            savings = result.get('savings_percent', 0)
+            
+            console.print(f"  📈 Original:   [red]{original:>6}[/red] tokens")
+            console.print(f"  📉 Optimized:  [green]{optimized:>6}[/green] tokens")
+            
+            if savings > 0:
+                console.print(f"  💸 Savings:    [bold green]{savings:>6.1f}%[/bold green] reduction")
+            else:
+                console.print(f"  ℹ️  Savings:    [yellow]  0.0%[/yellow] (already optimized)")
+            
+            if savings >= 30:
+                console.print("  🎉 [green]Excellent optimization![/green]")
+            elif savings >= 15:
+                console.print("  👍 [yellow]Good optimization[/yellow]")
         else:
-            console.print(f"✗ Optimization failed: {result['error']}")
+            console.print(f"❌ [red]Optimization failed: {result['error']}[/red]")
     
     elif args.command == 'edit':
         if not args.target:
@@ -242,24 +292,42 @@ def main():
         files = args.files
         
         if args.dry_run:
-            console.print(f"[bold yellow]DRY RUN - Would execute:[/bold yellow] {task}")
+            console.print("\n🔍 [bold yellow]DRY RUN PREVIEW[/bold yellow]")
+            console.print("─" * 40)
+            console.print(f"  📋 Would Execute: [cyan]{task}[/cyan]")
             if files:
-                console.print(f"   Target files: {files}")
+                console.print(f"  📁 Target Files:")
+                for file in files:
+                    console.print(f"     └─ [blue]{file}[/blue]")
             else:
-                console.print("   Files: Auto-selected using OSP ranking")
+                console.print(f"  🎯 Files: [yellow]Auto-selected using OSP ranking[/yellow]")
+            console.print("\n💡 [dim]Use without --dry-run to execute[/dim]")
             return
         
         result = cli.auto_edit(task, files)
         
         if "error" not in result:
-            console.print("[bold green]Autonomous Edit Results:[/bold green]")
-            console.print(f"   Task: {result.get('task', task)}")
-            console.print(f"   Files modified: {len(result.get('changes', []))}")
-            console.print(f"   Success: {result.get('success', False)}")
+            console.print("\n🤖 [bold magenta]AUTONOMOUS EDITING RESULTS[/bold magenta]")
+            console.print("─" * 55)
+            
+            task_desc = result.get('task', task)
+            files_modified = result.get('files_modified', len(result.get('changes', [])))
+            success_status = result.get('success', False)
+            
+            console.print(f"  📋 Task: [cyan]{task_desc}[/cyan]")
+            console.print(f"  📁 Files Modified: [green]{files_modified}[/green]")
+            console.print(f"  ✅ Status: [{'green' if success_status else 'red'}]{'Success' if success_status else 'Failed'}[/{'green' if success_status else 'red'}]")
+            
+            if result.get('changes'):
+                console.print("\n  📝 [bold]Changes Applied:[/bold]")
+                for change in result['changes']:
+                    file_name = Path(change['file']).name
+                    console.print(f"     └─ [blue]{file_name}[/blue]: {change.get('reasoning', 'Modified')}")
         else:
-            console.print(f"✗ Edit failed: {result['error']}")
+            console.print(f"❌ [red]Edit failed: {result['error']}[/red]")
     
-    console.print("\nUse --help for more options")
+    console.print("\n" + "─" * 60)
+    console.print("💡 [bold cyan]Use --help for more options[/bold cyan] | 🚀 [dim]Powered by OSP Intelligence[/dim]")
 
 if __name__ == "__main__":
     main()
