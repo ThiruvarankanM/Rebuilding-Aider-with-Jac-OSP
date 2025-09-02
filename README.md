@@ -4,6 +4,14 @@
 
 *Developed by Team ByteBrains*
 
+## 🎥 Live Demonstration
+
+**Watch the system in action:** [View Complete Demo](https://youtu.be/NxxmXkN2G1g)
+
+See real-time autonomous code editing, multi-file coordination, and spatial programming capabilities demonstrated on production codebases.
+
+---
+
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Agentic AI](https://img.shields.io/badge/Agentic-AI-purple.svg)](https://openrouter.ai/)
 [![OSP Technology](https://img.shields.io/badge/OSP-Spatial%20Programming-green.svg)](https://github.com/ThiruvarankanM/Rebuilding-Aider-with-Jac-OSP)
