@@ -27,14 +27,26 @@ except ImportError:
     __version__ = "development"
 
 
+class Args:
+    """Simple args namespace class for compatibility"""
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+    
+    def __getattr__(self, name):
+        return None
+
+
 def resolve_aiderignore_path(path_str, git_root=None):
     """Resolve path for .Aiderignore file (updated naming convention)"""
-    path = Path(path_str)
-    if path.is_absolute():
-        return str(path)
-    elif git_root:
-        return str(Path(git_root) / path)
-    return str(path)
+    if not path_str:
+        return None
+    path_obj = Path(path_str)
+    if path_obj.is_absolute():
+        return str(path_obj)
+    if git_root:
+        return str(Path(git_root) / path_str)
+    return str(path_obj)
 
 
 def default_env_file(git_root):

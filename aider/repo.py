@@ -893,3 +893,40 @@ class GitRepo:
         if not commit:
             return default
         return commit.message
+
+
+def get_repo_context(repo_path=None):
+    """
+    Get repository context for AI processing
+    
+    Args:
+        repo_path: Path to the repository (optional)
+        
+    Returns:
+        dict: Repository context information
+    """
+    if repo_path is None:
+        repo_path = os.getcwd()
+        
+    try:
+        repo = GitRepo(io=None, fnames=[], git_root=repo_path, 
+                      aiderignore_file=None, models=None, 
+                      attribute_author=False, attribute_committer=False,
+                      attribute_commit_message_author=False, 
+                      attribute_commit_message_committer=False)
+        
+        return {
+            'root': repo.root,
+            'git_root': repo.git_root,
+            'current_branch': getattr(repo.repo, 'active_branch', None),
+            'status': 'clean' if not repo.is_dirty() else 'dirty',
+            'files': list(repo.get_tracked_files())[:50]  # Limit for performance
+        }
+    except Exception:
+        return {
+            'root': repo_path,
+            'git_root': None,
+            'current_branch': None,
+            'status': 'unknown',
+            'files': []
+        }

@@ -7,7 +7,6 @@ from aider.dump import dump  # noqa: F401
 from .args import Args
 from .prompts import get_optimized_prompt, get_genius_template
 from .repo import get_repo_context
-from .models import get_model_for_mode
 
 # Import Jac integration
 try:
@@ -17,6 +16,9 @@ except ImportError:
     JAC_AVAILABLE = False
 
 warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
+
+# Default verbosity setting
+VERBOSE = False
 
 AIDER_SITE_URL = "https://aider.chat"
 AIDER_APP_NAME = "Aider"
@@ -110,11 +112,11 @@ def get_model_for_request(args=None):
     
     try:
         if hasattr(args, 'genius') and args.genius:
-            return get_model_for_mode('genius')
+            return 'gpt-4o'  # Default genius model
         elif hasattr(args, 'jac') and args.jac:
-            return get_model_for_mode('jac')
+            return 'claude-3-5-sonnet-20241022'  # Default Jac model
         else:
-            return get_model_for_mode('default')
+            return 'gpt-4o-mini'  # Default model
     except Exception as e:
         if VERBOSE:
             print(f"Warning: Model selection failed: {e}")

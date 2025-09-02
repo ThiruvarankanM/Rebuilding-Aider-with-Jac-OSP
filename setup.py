@@ -7,7 +7,7 @@ long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="aider-jac-osp",
-    version="2.0.0",
+    version="2.0.1",
     description="Aider: AI-powered coding assistant rebuilt with Jac Object-Spatial Programming and Genius Mode",
     long_description=long_description,
     long_description_content_type="text/markdown",

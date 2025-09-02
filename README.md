@@ -6,7 +6,7 @@
 
 ## 🎥 Live Demonstration
 
-**Watch the system in action:** [View Complete Demo](https://youtu.be/NxxmXkN2G1g)
+**Watch the system in action:** [View Complete Demo](https://youtu.be/2h2Y8VzGq8g)
 
 See real-time autonomous code editing, multi-file coordination, and spatial programming capabilities demonstrated on production codebases.
 
@@ -32,6 +32,22 @@ An autonomous code editing system that demonstrates Agentic AI capabilities thro
 
 ## Installation
 
+### Option 1: PyPI Package (Recommended)
+```bash
+pip install aider-jac-osp
+```
+
+### Option 2: Docker Container
+```bash
+# Build and run with Docker
+docker build -t aider-jac-osp .
+docker run -it -v $(pwd):/workspace aider-jac-osp
+
+# Or use docker-compose
+docker-compose up aider-jac-osp
+```
+
+### Option 3: Development Setup
 ```bash
 git clone https://github.com/ThiruvarankanM/Rebuilding-Aider-with-Jac-OSP.git
 cd Rebuilding-Aider-with-Jac-OSP
@@ -59,6 +75,16 @@ Configure API settings in `~/.aider-genius/config.json`:
 ```
 
 ## Usage
+
+### Quick Start
+```bash
+# Install the package
+pip install aider-jac-osp
+
+# Basic usage
+aider --help                            # Standard aider interface
+aider-genius --help                     # Advanced genius mode
+```
 
 ### Project Analysis
 ```bash
@@ -171,7 +197,16 @@ Aider-Genius utilizes Object-Spatial Programming (OSP) for advanced code analysi
 ## Testing
 
 ```bash
-# Verify system functionality
+# Install and verify package
+pip install aider-jac-osp
+pip show aider-jac-osp
+
+# Test functionality
+aider --version
+aider-genius analyze --dry-run
+python -c "import aider; print('Import successful')"
+
+# Development testing
 python system_test.py
 
 # Test autonomous capabilities

@@ -12,6 +12,44 @@ This module provides:
 from typing import Dict, Any, Optional
 import json
 
+
+def get_optimized_prompt(prompt: str, **kwargs) -> str:
+    """
+    Optimize a prompt for token efficiency and effectiveness
+    
+    Args:
+        prompt: The original prompt to optimize
+        **kwargs: Additional parameters for optimization
+        
+    Returns:
+        str: Optimized prompt
+    """
+    # Basic optimization - remove extra whitespace and normalize
+    optimized = ' '.join(prompt.split())
+    return optimized
+
+
+def get_genius_template(template_name: str = "default") -> str:
+    """
+    Get a genius mode template by name
+    
+    Args:
+        template_name: Name of the template to retrieve
+        
+    Returns:
+        str: The genius template content
+    """
+    templates = {
+        "default": """You are an AI coding assistant with advanced capabilities. 
+Analyze the request carefully and provide comprehensive, well-structured responses.""",
+        "analysis": """You are a code analysis expert. Examine the code thoroughly 
+and provide detailed insights, potential improvements, and architectural recommendations.""",
+        "optimization": """You are a performance optimization specialist. Focus on 
+efficiency, scalability, and best practices in your code suggestions."""
+    }
+    return templates.get(template_name, templates["default"])
+
+
 # COMMIT PROMPTS
 # Conventional Commits text adapted from:
 # https://www.conventionalcommits.org/en/v1.0.0/#summary
