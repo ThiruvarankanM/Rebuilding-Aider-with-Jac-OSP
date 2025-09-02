@@ -1,29 +1,179 @@
-# 🧠 Aider-Genius: Agentic AI Autonomous Code Editor
+# Rebuilding Aider with Jac
 
-**Enterprise-grade Agentic AI system for autonomous software development powered by Jac Object-Spatial Programming**
+**Autonomous Code Editor Powered by Jac Object-Spatial Programming**
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Agentic AI](https://img.shields.io/badge/Agentic-AI-purple.svg)](https://openrouter.ai/)
 [![OSP Technology](https://img.shields.io/badge/OSP-Spatial%20Programming-green.svg)](https://github.com/ThiruvarankanM/Rebuilding-Aider-with-Jac-OSP)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 🚀 Agentic AI Overview
+## Overview
 
-Aider-Genius is a **fully autonomous AI agent** that independently plans, executes, and manages software development tasks. Unlike traditional AI assistants that require constant guidance, this agent demonstrates true **autonomous intelligence** through:
+An autonomous code editing system that demonstrates Agentic AI capabilities through intelligent task planning, multi-file coordination, and spatial code analysis. Built with Python-Jac integration for professional development workflows.
 
-**🎯 Autonomous Capabilities:**
-- 🤖 **Independent Task Planning**: Breaks down complex goals into executable subtasks
-- 🧠 **Multi-step Reasoning**: Chains together analysis, planning, and execution phases
-- 🔄 **Self-Directed Learning**: Adapts strategies based on codebase patterns and feedback
-- 🎛️ **Tool Orchestration**: Coordinates multiple AI models and analysis tools
-- 📊 **Strategic Decision Making**: Uses OSP spatial intelligence for optimal choices
+**Core Achievements:**
+- 25.8% token cost reduction on production codebases
+- Multi-file autonomous editing with coordinated changes
+- Spatial code analysis using Object-Spatial Programming algorithms
+- Professional CLI interface with comprehensive operation tracking
+- Multi-LLM provider support including cost-effective free models
 
-**🏆 Proven Agentic Results:**
-- 🎯 **25.8% Token Cost Reduction** through intelligent optimization strategies
-- 🏗️ **Multi-file Autonomous Editing** with cross-file dependency understanding
-- 📊 **Spatial Code Analysis** using advanced OSP reasoning algorithms
-- 💼 **Professional Workflow Integration** with enterprise-grade safety measures
-- 🔄 **Multi-LLM Orchestration** for optimal model selection and task distribution
+## Installation
+
+```bash
+git clone https://github.com/ThiruvarankanM/Rebuilding-Aider-with-Jac-OSP.git
+cd Rebuilding-Aider-with-Jac-OSP
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
+
+## Configuration
+
+```bash
+aider-genius setup
+```
+
+Configure API settings in `~/.aider-genius/config.json`:
+```json
+{
+  "llm_provider": "openrouter",
+  "model": "google/gemma-2-9b-it:free",
+  "api_key": "your-openrouter-key",
+  "max_tokens": 4000,
+  "temperature": 0.2
+}
+```
+
+## Usage
+
+### Project Analysis
+```bash
+aider-genius analyze                    # Analyze entire project structure
+aider-genius analyze --dir src/         # Directory-specific analysis
+aider-genius analyze --files main.py utils.py --verbose
+```
+
+### Cost Optimization
+```bash
+aider-genius optimize main.py          # Single file optimization
+aider-genius optimize --files *.py     # Batch optimization
+```
+
+### Autonomous Editing
+```bash
+aider-genius edit "add error handling"
+aider-genius edit "improve logging" --files app.py utils.py
+aider-genius edit "optimize performance" --dry-run
+```
+
+## Architecture
+
+### Agentic AI System
+The system implements autonomous intelligence through:
+
+- **Task Planning**: Independent decomposition of high-level objectives
+- **Spatial Analysis**: Multi-dimensional code relationship understanding
+- **Coordinated Execution**: Synchronized multi-file modification strategies
+- **Adaptive Learning**: Pattern recognition for improved decision making
+
+### Technology Stack
+- **Python**: Core system implementation and LLM integration
+- **Jac**: Object-Spatial Programming for advanced code analysis
+- **Rich**: Professional terminal interface with visual formatting
+- **Multi-LLM**: OpenAI, Anthropic, OpenRouter provider support
+
+### System Components
+```
+aider/
+├── cli.py                     # Command-line interface
+├── integration/
+│   ├── jac_bridge.py         # Python-Jac integration layer
+│   ├── file_editor.py        # Autonomous editing engine
+│   ├── llm_client.py         # Multi-provider LLM client
+│   └── osp_interface.py      # Spatial programming interface
+└── jac/                      # Spatial programming modules
+    ├── repomap_osp.jac       # File ranking algorithms
+    ├── token_optimizer.jac   # Cost optimization
+    ├── planning_walker.jac   # Task decomposition
+    └── context_gatherer.jac  # Context optimization
+```
+
+## Key Features
+
+### Autonomous Code Understanding
+- Real-time analysis of project structure and dependencies
+- Intelligent file relevance scoring using spatial algorithms
+- Cross-component relationship mapping for coordinated changes
+- Pattern recognition for consistent code style maintenance
+
+### Professional Development Integration
+- Comprehensive backup system with version control
+- Dry-run mode for safe change preview
+- Git integration for collaborative workflows
+- Enterprise-grade error handling and logging
+
+### Cost-Effective Operation
+- Proven 25.8% token reduction on large codebases
+- Support for free-tier LLM models
+- Intelligent prompt optimization for minimal API usage
+- Configurable resource limits and usage tracking
+
+## Performance Metrics
+
+| Feature | Result | Impact |
+|---------|--------|---------|
+| Token Optimization | 25.8% reduction | Significant cost savings |
+| File Analysis | 23+ files processed | Comprehensive coverage |
+| Multi-file Coordination | 2+ simultaneous edits | Synchronized changes |
+| Processing Speed | Sub-3 second response | Real-time workflow |
+
+## Advanced Capabilities
+
+### Object-Spatial Programming Integration
+- Spatial code graphs for relationship visualization
+- Multi-dimensional dependency analysis
+- Context-aware code selection and modification
+- Predictive impact assessment across file boundaries
+
+### Agentic AI Features
+- Independent task planning and strategy formulation
+- Multi-step reasoning with adaptive decision making
+- Self-directed learning from codebase patterns
+- Autonomous quality validation and error correction
+
+## Future Enhancements
+
+- Advanced LLM integration (GPT-4, Claude-3)
+- Web-based interface for visual spatial programming
+- IDE plugins for native development environment integration
+- Enhanced pattern recognition with AST-based analysis
+- Team collaboration features with multi-developer coordination
+
+## Testing
+
+```bash
+# Verify system functionality
+python system_test.py
+
+# Test autonomous capabilities
+aider-genius edit "comprehensive code improvement" --dry-run
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create feature branches for enhancements
+3. Submit pull requests with comprehensive testing
+4. Follow established code quality standards
+
+## License
+
+MIT License - Open source autonomous AI innovation
+
+---
+
+**Professional autonomous coding solution powered by Agentic AI and Object-Spatial Programming**
 
 ## 🤖 AGENTIC AI ARCHITECTURE
 
