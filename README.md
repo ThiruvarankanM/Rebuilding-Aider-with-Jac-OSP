@@ -6,7 +6,10 @@
 
 ## 🎥 Live Demonstration
 
-**Watch the system in action:** [View Complete Demo](https://youtu.be/2h2Y8VzGq8g)
+**Watch the system in action:**
+
+- **🤖 Agent Mode Demo:** [Autonomous Agentic AI Operations](https://youtu.be/2h2Y8VzGq8g)
+- **⚙️ Standard Mode Demo:** [Standard Code Editing Features](https://youtu.be/qP_V97Zia7s)
 
 See real-time autonomous code editing, multi-file coordination, and spatial programming capabilities demonstrated on production codebases.
 
