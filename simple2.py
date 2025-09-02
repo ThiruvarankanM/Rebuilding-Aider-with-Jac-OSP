@@ -1,3 +1,3 @@
 class Report:
-return "updated status report"  # AI-changed
-        return "updated status report"  # AI-changed
+    def get_status(self):
+        return "status report"
