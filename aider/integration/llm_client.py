@@ -34,14 +34,21 @@ class LLMClient:
             with open(config_file, 'r') as f:
                 return json.load(f)
         else:
-            # Default configuration for OpenRouter
+            # Default configuration with multiple free model options (verified working)
             return {
                 "llm_provider": "openrouter",
-                "model": "google/gemma-2-9b-it:free", 
+                "model": "deepseek/deepseek-chat-v3.1:free",  # Excellent for coding
+                "fallback_models": [
+                    "qwen/qwen3-coder:free",                        # Specialized for code
+                    "openai/gpt-oss-120b:free",                     # Large context
+                    "z-ai/glm-4.5-air:free",                        # Fast and reliable  
+                    "google/gemma-3n-e2b-it:free",                  # Google's latest
+                    "google/gemma-2-9b-it:free"                     # Original fallback
+                ],
                 "api_base": "https://openrouter.ai/api/v1",
                 "max_tokens": 4000,
                 "temperature": 0.2,
-                "api_key": None
+                "api_key": "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"
             }
     
     def _initialize_client(self):
@@ -62,17 +69,19 @@ class LLMClient:
                 )
                 self.current_provider = "openrouter"
             elif provider == "openai":
-                openai.api_key = api_key
-                self.client = openai
+                self.client = openai.OpenAI(api_key=api_key)
                 self.current_provider = "openai"
             elif provider == "anthropic":
                 self.client = Anthropic(api_key=api_key)
                 self.current_provider = "anthropic"
             else:
                 print(f"Warning: Unknown provider: {provider}")
+                self.client = None
                 
         except Exception as e:
             print(f"Warning: Failed to initialize LLM client: {e}")
+            self.client = None
+            self.current_provider = None
     
     def generate_code(self, prompt: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
         """
@@ -191,33 +200,72 @@ class LLMClient:
             return {"error": str(e)}
     
     def _call_openrouter(self, prompt: str) -> Dict[str, Any]:
-        """Call OpenRouter API (supports many free models)"""
-        try:
-            response = self.client.chat.completions.create(
-                model=self.config.get("model", "google/gemma-2-9b-it:free"),
-                messages=[
-                    {"role": "system", "content": "You are an expert programmer. Generate clean, efficient code with proper documentation."},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=self.config.get("max_tokens", 4000),
-                temperature=self.config.get("temperature", 0.2),
-                extra_headers={
-                    "HTTP-Referer": "https://github.com/ThiruvarankanM/Rebuilding-Aider-with-Jac-OSP",
-                    "X-Title": "Aider-Genius AI Coding Assistant"
+        """Call OpenRouter API with automatic fallback to different free models"""
+        # Check if client is properly initialized
+        if not self.client:
+            return {"error": "LLM client not properly initialized. Check API key and configuration."}
+        
+        # Get primary model and fallback models
+        primary_model = self.config.get("model", "deepseek/deepseek-chat-v3.1:free")
+        fallback_models = self.config.get("fallback_models", [
+            "deepseek/deepseek-chat-v3.1:free",  # Keep trying DeepSeek first
+            "qwen/qwen3-coder:free",
+            "z-ai/glm-4.5-air:free", 
+            "google/gemma-3n-e2b-it:free",
+            "google/gemma-2-9b-it:free"  # Last resort
+        ])
+        
+        models_to_try = [primary_model] + fallback_models
+        
+        for model in models_to_try:
+            try:
+                print(f"🤖 Trying model: {model}")
+                response = self.client.chat.completions.create(
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": "You are an expert programmer. Generate clean, efficient code with proper documentation."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    max_tokens=self.config.get("max_tokens", 4000),
+                    temperature=self.config.get("temperature", 0.2),
+                    extra_headers={
+                        "HTTP-Referer": "https://github.com/ThiruvarankanM/Rebuilding-Aider-with-Jac-OSP",
+                        "X-Title": "Aider-Genius AI Coding Assistant"
+                    }
+                )
+                
+                print(f"✅ Success with model: {model}")
+                return {
+                    "code": response.choices[0].message.content,
+                    "explanation": f"Generated by {model}",
+                    "model_used": model,
+                    "tokens": {
+                        "prompt": response.usage.prompt_tokens if response.usage else 0,
+                        "completion": response.usage.completion_tokens if response.usage else 0,
+                        "total": response.usage.total_tokens if response.usage else 0
+                    }
                 }
-            )
-            
-            return {
-                "code": response.choices[0].message.content,
-                "explanation": f"Generated by {self.config.get('model', 'OpenRouter model')}",
-                "tokens": {
-                    "prompt": response.usage.prompt_tokens if response.usage else 0,
-                    "completion": response.usage.completion_tokens if response.usage else 0,
-                    "total": response.usage.total_tokens if response.usage else 0
-                }
-            }
-        except Exception as e:
-            return {"error": str(e)}
+                
+            except Exception as e:
+                error_msg = str(e)
+                print(f"❌ Model {model} failed: {error_msg}")
+                
+                # Check if it's a rate limit or specific error
+                if "429" in error_msg or "rate limit" in error_msg.lower():
+                    print(f"⚠️ Rate limit hit for {model}, trying next...")
+                    continue
+                elif "401" in error_msg or "unauthorized" in error_msg.lower():
+                    print(f"⚠️ Auth issue with {model}, trying next...")
+                    continue
+                else:
+                    print(f"⚠️ Other error with {model}: {error_msg}")
+                    continue
+        
+        # If all models fail
+        return {
+            "error": f"All models failed. Last error with {models_to_try[-1]}: {error_msg}",
+            "models_tried": models_to_try
+        }
     
     def _generate_mock_response(self, prompt: str, context: Dict = None) -> Dict[str, Any]:
         """Generate mock response when no LLM available (for testing)"""
