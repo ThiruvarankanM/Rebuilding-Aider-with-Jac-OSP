@@ -1,12 +1,12 @@
 from packaging import version
 
-__version__ = "0.86.2.dev"
+__version__ = "2.0.3"
 safe_version = __version__
 
 try:
     from aider._version import __version__
 except Exception:
-    __version__ = safe_version + "+import"
+    __version__ = safe_version
 
 if type(__version__) is not str:
     __version__ = safe_version + "+type"

@@ -1,3 +1,3 @@
 """Version information for aider."""
 
-VERSION = "0.1.0"
+VERSION = "2.0.3"
