@@ -121,20 +121,16 @@ walker FastScanner {
     has stats: dict = {};
 
     def init() {
-        self.cache = {};
-        self.stats = {
-            "scanned": 0,
-            "cached": 0
-        };
-        print("Fast scanner initialized");
+        self.scan_cache = {};
+        self.performance_stats = {"scanned": 0, "cached": 0};
     }
 
     def scan_repo(repo_path: str) -> dict {
         # Check cache
         cache_key = "repo_" + repo_path;
-        if cache_key in self.cache {
-            self.stats["cached"] = self.stats["cached"] + 1;
-            return self.cache[cache_key];
+        if cache_key in self.scan_cache {
+            self.performance_stats["cached"] = self.performance_stats["cached"] + 1;
+            return self.scan_cache[cache_key];
         }
 
         # Simulate scanning files
@@ -167,8 +163,8 @@ walker FastScanner {
         };
 
         # Cache result
-        self.cache[cache_key] = scan_result;
-        self.stats["scanned"] = self.stats["scanned"] + len(scanned_files);
+        self.scan_cache[cache_key] = scan_result;
+        self.performance_stats["scanned"] = self.performance_stats["scanned"] + len(scanned_files);
 
         return scan_result;
     }
@@ -195,7 +191,10 @@ walker FastScanner {
     }
 
     def get_stats() -> dict {
-        return self.stats;
+        return {
+            "scanned": len(self.scan_cache),
+            "cached": self.scan_cache.get("hits", 0)
+        };
     }
 }
 
@@ -211,7 +210,6 @@ walker SmartSuggester {
             "no_error_handling": "open(",
             "inefficient_loop": "for.*append"
         };
-        print("Smart suggester initialized");
     }
 
     def analyze_code_quality(file_path: str, sample_code: str) -> dict {
@@ -288,7 +286,13 @@ walker OSPSystem {
     has spatial_graph: FastSpatialGraph;
     has scanner: FastScanner;
     has suggester: SmartSuggester;
-    has initialized: bool = false;
+    has initialized: bool = False;
+
+    def __init__(spatial_graph: FastSpatialGraph, scanner: FastScanner, suggester: SmartSuggester) {
+        self.spatial_graph = spatial_graph;
+        self.scanner = scanner;
+        self.suggester = suggester;
+    }
 
     def initialize() {
         self.spatial_graph = FastSpatialGraph();
@@ -297,12 +301,9 @@ walker OSPSystem {
         
         self.scanner.init();
         self.suggester.init();
-        self.initialized = true;
+        self.initialized = True;
         
-        print("=== OSP Enhanced System Ready ===");
-        print("✅ Spatial Graph: Initialized");
-        print("✅ Fast Scanner: Initialized");
-        print("✅ Smart Suggester: Initialized");
+        print("OSP System Ready");
     }
 
     def full_repo_analysis(repo_path: str) -> dict {
@@ -310,15 +311,12 @@ walker OSPSystem {
             self.initialize();
         }
         
-        print("\n🚀 Starting Full Repository Analysis");
-        print("Repository: " + repo_path);
+        print("Analyzing: " + repo_path);
         
         # Step 1: Fast scanning
-        print("\nStep 1: Fast repository scanning...");
         scan_results = self.scanner.scan_repo(repo_path);
         
         # Step 2: Build spatial graph
-        print("Step 2: Building spatial graph...");
         scanned_files = scan_results["files"];
         
         for file_data in scanned_files {
@@ -335,7 +333,6 @@ walker OSPSystem {
         }
         
         # Step 3: Generate code suggestions
-        print("Step 3: Analyzing code quality...");
         all_analyses = [];
         
         for file_data in scanned_files {
@@ -348,7 +345,6 @@ walker OSPSystem {
         suggestion_report = self.suggester.create_report(all_analyses);
         
         # Step 4: Change impact analysis
-        print("Step 4: Change impact analysis...");
         impact_analyses = [];
         
         for file_data in scanned_files {
@@ -366,19 +362,17 @@ walker OSPSystem {
             "scanner_stats": self.scanner.get_stats()
         };
         
+        print("Analysis complete: " + str(len(scanned_files)) + " files");
+        
         return comprehensive_report;
     }
 
     def demonstrate_capabilities() {
-        print("\n🎯 OSP/MTP System Capabilities Demo");
-        print("=" * 45);
-        
         if not self.initialized {
             self.initialize();
         }
         
         # Demo 1: Spatial Graph
-        print("\n1. Multi-Dimensional Spatial Analysis:");
         self.spatial_graph.add_enhanced_node("main.py", "python", 15);
         self.spatial_graph.add_enhanced_node("utils.py", "python", 8);
         self.spatial_graph.add_enhanced_node("config.jac", "jac", 3);
@@ -386,79 +380,31 @@ walker OSPSystem {
         self.spatial_graph.add_edge("main.py", "utils.py");
         self.spatial_graph.add_edge("main.py", "config.jac");
         
-        self.spatial_graph.print_spatial_info();
+        # Demo 2: Scanner
+        scan_results = self.scanner.scan_repo("./demo_project");
         
-        # Demo 2: Change Impact
-        print("\n2. Change Impact Prediction:");
-        impact = self.spatial_graph.analyze_change_impact("main.py");
-        print("Change impact for main.py:");
-        print("  Direct dependencies: " + str(impact["direct_deps"]));
-        print("  Spatial neighbors: " + str(impact["spatial_neighbors"]));
-        print("  Risk level: " + impact["risk_level"]);
-        
-        # Demo 3: Fast Scanning
-        print("\n3. Ultra-Fast Repository Scanning:");
-        demo_scan = self.scanner.scan_repo("/demo/project");
-        print("Scan results:");
-        print("  Files found: " + str(demo_scan["file_count"]));
-        print("  Total functions: " + str(demo_scan["total_functions"]));
-        print("  Total classes: " + str(demo_scan["total_classes"]));
-        
-        # Demo 4: Smart Suggestions
-        print("\n4. Intelligent Code Suggestions:");
-        demo_code = "open('file.txt')\nfor i in data:\n    result.append(process(i))";
-        analysis = self.suggester.analyze_code_quality("demo.py", demo_code);
-        print("Generated " + str(analysis["suggestion_count"]) + " suggestions:");
-        for suggestion in analysis["suggestions"] {
-            print("  • " + suggestion["message"]);
-        }
-        
-        print("\n✨ All capabilities demonstrated successfully!");
+        # Demo 3: Suggester
+        # Demo 3: Suggester
+        # Demo 3: Suggester
+        suggestions = self.suggester.analyze_code_quality("main.py", "def main():\n    pass");
     }
 }
 
 # Entry point with full demonstration
 with entry {
-    print("🚀 OSP/MTP Enhanced System Starting...");
-    print("=" * 50);
+    print("Starting OSP System...");
     
     # Create and initialize system
-    osp_system = OSPSystem();
+    spatial_graph = FastSpatialGraph();
+    scanner = FastScanner();
+    suggester = SmartSuggester();
+    
+    osp_system = OSPSystem(spatial_graph, scanner, suggester);
     osp_system.initialize();
     
     # Run capabilities demonstration
     osp_system.demonstrate_capabilities();
     
     # Full repository analysis example
-    print("\n" + "=" * 50);
-    print("📊 Complete Repository Analysis Example");
-    print("=" * 50);
-    
     final_report = osp_system.full_repo_analysis("/example/repository");
-    
-    print("\n🎉 ANALYSIS COMPLETE!");
-    print("=" * 30);
-    print("Repository: " + final_report["repository"]);
-    print("Files analyzed: " + str(final_report["scan_results"]["file_count"]));
-    print("Total functions: " + str(final_report["scan_results"]["total_functions"]));
-    print("Total classes: " + str(final_report["scan_results"]["total_classes"]));
-    print("Suggestions generated: " + str(final_report["suggestion_report"]["total_suggestions"]));
-    print("High-priority files: " + str(final_report["suggestion_report"]["high_priority_files"]));
-    print("Spatial nodes created: " + str(final_report["spatial_nodes"]));
-    
-    # Performance metrics
-    stats = final_report["scanner_stats"];
-    print("\n⚡ Performance Metrics:");
-    print("Files scanned: " + str(stats["scanned"]));
-    print("Cache hits: " + str(stats["cached"]));
-    
-    print("\n🏆 SUCCESS! OSP/MTP Enhanced System Operational!");
-    print("=" * 50);
-    print("🎯 Key Achievements:");
-    print("✅ Ultra-fast repository scanning with caching");
-    print("✅ Multi-dimensional spatial graph analysis");
-    print("✅ Intelligent code quality suggestions");
-    print("✅ Change impact prediction system");
-    print("✅ Performance optimization through spatial indexing");
-    print("\n🚀 Ready for 10x faster code analysis!");
 }
