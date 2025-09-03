@@ -4,7 +4,7 @@
 
 **Autonomous Code Editor Powered by Jac Object-Spatial Programming**
 
-*Developed by Team ByteBrain*
+*Developed by Team ByteBrains*
 
 ## 🎥 Live Demonstration
 
