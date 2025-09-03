@@ -37,8 +37,8 @@ class MTPInterface:
             Plan dictionary with ordered steps and metadata
         """
         try:
-            plan = self.bridge.execute_script(
-                "planning_walker",
+            plan = self.bridge.call_walker(
+                "planning_walker", "create_plan",
                 args={"task": task_description, "context": context}
             )
             return plan or {"steps": [], "summary": "No plan generated"}
@@ -57,8 +57,8 @@ class MTPInterface:
             Updated file content
         """
         try:
-            updated_content = self.bridge.execute_script(
-                "editing_walker",
+            updated_content = self.bridge.call_walker(
+                "editing_walker", "edit_file",
                 args={"file_path": file_path, "instructions": instructions}
             )
             return updated_content or ""
@@ -76,8 +76,8 @@ class MTPInterface:
             Validation results including warnings, errors, and recommendations
         """
         try:
-            validation_result = self.bridge.execute_script(
-                "validation_walker",
+            validation_result = self.bridge.call_walker(
+                "validation_walker", "validate_file",
                 args={"file_path": file_path}
             )
             return validation_result or {}
@@ -95,8 +95,8 @@ class MTPInterface:
             Dict containing validation results
         """
         try:
-            validation_result = self.bridge.execute_script(
-                "validation_walker",
+            validation_result = self.bridge.call_walker(
+                "validation_walker", "validate_changes",
                 args={"files": files or []}
             )
             return validation_result or {"success": True, "message": "No validation issues found"}

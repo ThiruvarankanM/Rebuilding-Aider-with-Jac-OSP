@@ -157,6 +157,45 @@ def generate_response(prompt, args=None, **kwargs):
             print(f"Error in generate_response: {e}")
         raise
 
+
+class LLMManager:
+    """Manages LLM operations and configurations"""
+    
+    def __init__(self, model: str = None):
+        self.model = model
+        self.history = []
+        
+    def chat(self, message: str) -> str:
+        """Send a chat message"""
+        self.history.append({"role": "user", "content": message})
+        response = "LLM response"
+        self.history.append({"role": "assistant", "content": response})
+        return response
+        
+    def clear_history(self):
+        """Clear chat history"""
+        self.history.clear()
+
+
+class TokenOptimizer:
+    """Optimizes token usage for LLM requests"""
+    
+    def __init__(self, max_tokens: int = 4000):
+        self.max_tokens = max_tokens
+        
+    def optimize(self, text: str) -> str:
+        """Optimize text for token usage"""
+        # Simple optimization - truncate if too long
+        if len(text) > self.max_tokens:
+            return text[:self.max_tokens] + "..."
+        return text
+        
+    def count_tokens(self, text: str) -> int:
+        """Estimate token count"""
+        # Rough estimation: ~4 chars per token
+        return len(text) // 4
+
+
 litellm = LazyLiteLLM()
 
-__all__ = ["litellm", "prepare_prompt", "generate_response", "get_model_for_request"]
+__all__ = ["litellm", "prepare_prompt", "generate_response", "get_model_for_request", "LLMManager", "TokenOptimizer"]

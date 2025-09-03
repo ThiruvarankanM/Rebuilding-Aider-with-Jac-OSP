@@ -913,6 +913,13 @@ def get_parser(default_config_files, git_root, formatter_class=None):
     return parser
 
 
+def add_deprecated_model_args(parser, group):
+    """Add deprecated model arguments to the argument parser"""
+    # Add any deprecated model-related arguments here
+    # For now, this is a placeholder function
+    pass
+
+
 def get_md_help():
     """Generate markdown help output"""
     os.environ["COLUMNS"] = "70"

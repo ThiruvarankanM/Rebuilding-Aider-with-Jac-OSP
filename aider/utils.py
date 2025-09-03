@@ -5,7 +5,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-import oslex
+import shlex
 
 from aider.dump import dump  # noqa: F401
 from aider.waiting import Spinner
@@ -342,4 +342,4 @@ def printable_shell_command(cmd_list):
     Returns:
         str: Shell-escaped command string.
     """
-    return oslex.join(cmd_list)
+    return shlex.join(cmd_list)
