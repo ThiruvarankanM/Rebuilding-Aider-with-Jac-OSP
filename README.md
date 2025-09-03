@@ -1,5 +1,7 @@
 # Rebuilding Aider with Jac
 
+📑 **[Full System Documentation (PDF)](https://github.com/ThiruvarankanM/Rebuilding-Aider-with-Jac-OSP/blob/7a56f84bcb0dd75839485acbe72aa791d796efd9/ByteBrains_Aider-Jac-OSP_System_Documentation.pdf)**
+
 **Autonomous Code Editor Powered by Jac Object-Spatial Programming**
 
 *Developed by Team ByteBrains*
