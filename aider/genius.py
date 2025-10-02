@@ -26,22 +26,7 @@ class GeniusMode:
             repo: Repository instance
             llm_config: LLM configuration settings
         """
-        self.io = io
-        self.repo = repo
-        self.llm_config = llm_config or {}
-        
-        # Initialize Jac integration
-        try:
-            self.jac = JacIntegration()
-        except Exception as e:
-            raise GeniusConfigError(f"Failed to initialize Jac integration: {str(e)}")
-
-        # Genius Mode settings
-        self.max_iterations = self.llm_config.get('genius_max_iterations', 10)
-        self.confidence_threshold = self.llm_config.get('genius_confidence_threshold', 0.8)
-        self.validation_enabled = self.llm_config.get('genius_validation', True)
-
-    def is_available(self) -> bool:
+    self.io = io
         """Check if Genius Mode is available and properly configured."""
         try:
             # Test Jac integration
@@ -60,37 +45,7 @@ class GeniusMode:
         Returns:
             Dict containing enablement status and configuration
         """
-        if not self.is_available():
-            return {
-                "success": False,
-                "error": "Genius Mode unavailable - Jac integration not working"
-            }
-
-        self.io.tool_output("Genius Mode enabled - Autonomous operation starting")
-        
-        try:
-            # Initialize planning
-            if task_description:
-                plan = self.jac.plan_autonomous_task(task_description)
-                self.io.tool_output(f"Generated autonomous plan: {plan.get('summary', 'Plan created')}")
-                
-            return {
-                "success": True,
-                "mode": "genius",
-                "task": task_description,
-                "config": {
-                    "max_iterations": self.max_iterations,
-                    "confidence_threshold": self.confidence_threshold,
-                    "validation_enabled": self.validation_enabled
-                }
-            }
-        except Exception as e:
-            return {
-                "success": False,
-                "error": f"Failed to enable Genius Mode: {str(e)}"
-            }
-
-    def execute_autonomous_task(self, task: str, context: Optional[str] = None) -> Dict[str, Any]:
+    if not self.is_available():
         """
         Execute a task autonomously using Jac OSP/MTP.
 
@@ -101,51 +56,11 @@ class GeniusMode:
         Returns:
             Dict containing execution results
         """
-        try:
-            self.io.tool_output(f"🔮 Genius Mode executing: {task}")
-            
-            # Step 1: Plan using MTP
-            plan = self.jac.plan_autonomous_task(task, context)
-            self.io.tool_output(f"Plan: {plan.get('summary', 'Generated')}")
-
-            # Step 2: Rank files using OSP
-            if self.repo.get_tracked_files():
-                rankings = self.jac.get_repo_ranking(self.repo.get_tracked_files(), task)
-                top_files = sorted(rankings.items(), key=lambda x: x[1], reverse=True)[:5]
-                self.io.tool_output(f"Top relevant files: {[f[0] for f in top_files]}")
-
-            # Step 3: Execute plan steps
-            results = []
-            for step in plan.get('steps', []):
-                step_result = self._execute_plan_step(step)
-                results.append(step_result)
-                
-                # Validate after each step if enabled
-                if self.validation_enabled and step_result.get('success'):
-                    validation = self._validate_step(step, step_result)
-                    if not validation.get('success'):
-                        self.io.tool_output(f"⚠️ Validation failed for step: {step}")
-                        break
-
-            return {
-                "success": True,
-                "task": task,
-                "plan": plan,
-                "results": results,
-                "files_modified": self._get_modified_files(results)
-            }
-
-        except Exception as e:
-            return {
-                "success": False,
-                "error": f"Autonomous execution failed: {str(e)}"
-            }
-
-    def _execute_plan_step(self, step: Dict[str, Any]) -> Dict[str, Any]:
+    try:
         """Execute a single plan step."""
         try:
             step_type = step.get('type', 'unknown')
-            
+
             if step_type == 'file_edit':
                 return self._execute_file_edit(step)
             elif step_type == 'analysis':
@@ -154,7 +69,7 @@ class GeniusMode:
                 return self._execute_validation(step)
             else:
                 return {"success": False, "error": f"Unknown step type: {step_type}"}
-                
+
         except Exception as e:
             return {"success": False, "error": f"Step execution failed: {str(e)}"}
 
@@ -245,7 +160,7 @@ class GeniusConfig:
     def _load_config(self) -> Dict[str, Any]:
         """Load configuration from file."""
         import json
-        
+
         default_config = {
             "max_iterations": 10,
             "confidence_threshold": 0.8,
@@ -270,7 +185,7 @@ class GeniusConfig:
     def save_config(self) -> bool:
         """Save current configuration to file."""
         import json
-        
+
         try:
             os.makedirs(os.path.dirname(self.config_file), exist_ok=True)
             with open(self.config_file, 'w') as f:

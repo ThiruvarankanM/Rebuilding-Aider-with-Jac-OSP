@@ -27,10 +27,10 @@ class JacIntegration:
         """
         self.jac_workspace = jac_workspace or os.path.join(os.path.dirname(__file__), 'jac')
         self.cache_dir = cache_dir or os.path.join(os.path.dirname(__file__), '..', '.jac_cache')
-        
+
         # Initialize interfaces
         self.osp = OSPInterface(jac_workspace=self.jac_workspace)
-        self.mtp = MTPInterface(jac_workspace=self.jac_workspace) 
+        self.mtp = MTPInterface(jac_workspace=self.jac_workspace)
         self.bridge = JacBridge(jac_workspace=self.jac_workspace)
 
     def handle_command(self, command: str) -> Dict[str, Any]:
@@ -43,28 +43,7 @@ class JacIntegration:
         Returns:
             Dict containing command result
         """
-        parts = command.strip().split()
-        if len(parts) < 2:
-            return {"error": "Invalid Jac command. Usage: /jac <subcommand>"}
-
-        subcommand = parts[1].lower()
-        args = parts[2:] if len(parts) > 2 else []
-
-        try:
-            if subcommand == "rank":
-                return self._handle_rank_command(args)
-            elif subcommand == "plan":
-                return self._handle_plan_command(args)
-            elif subcommand == "validate":
-                return self._handle_validate_command(args)
-            elif subcommand == "optimize":
-                return self._handle_optimize_command(args)
-            else:
-                return {"error": f"Unknown Jac subcommand: {subcommand}"}
-        except Exception as e:
-            return {"error": f"Jac command failed: {str(e)}"}
-
-    def _handle_rank_command(self, args: List[str]) -> Dict[str, Any]:
+    parts = command.strip().split()
         """Handle /jac rank command."""
         try:
             rankings = self.osp.rank_files()
@@ -80,7 +59,7 @@ class JacIntegration:
         """Handle /jac plan command."""
         if not args:
             return {"error": "Plan command requires a task description"}
-        
+
         task = " ".join(args)
         try:
             plan = self.mtp.plan_task(task)
@@ -99,7 +78,7 @@ class JacIntegration:
             validation_result = self.mtp.validate_changes()
             return {
                 "success": True,
-                "command": "validate", 
+                "command": "validate",
                 "result": validation_result
             }
         except Exception as e:
@@ -190,27 +169,7 @@ class JacIntegration:
         Returns:
             Dict containing status information
         """
-        try:
-            bridge_status = self.bridge.test_connection()
-            return {
-                "available": bridge_status.get('success', False),
-                "jac_workspace": self.jac_workspace,
-                "bridge_status": bridge_status,
-                "interfaces": {
-                    "osp": "initialized",
-                    "mtp": "initialized", 
-                    "bridge": "initialized"
-                }
-            }
-        except Exception as e:
-            return {
-                "available": False,
-                "error": str(e),
-                "jac_workspace": self.jac_workspace
-            }
-
-
-def process_with_jac(content: str, operation: str = "analyze") -> Any:
+    try:
     """
     Utility function for processing content with Jac.
     Used by llm.py for integration.
@@ -223,12 +182,3 @@ def process_with_jac(content: str, operation: str = "analyze") -> Any:
         Processing result
     """
     integration = JacIntegration()
-    
-    if operation == "analyze":
-        return integration.bridge.execute_script("context_gatherer.jac", {"content": content})
-    elif operation == "rank":
-        return integration.get_repo_ranking([content])
-    elif operation == "optimize":
-        return integration.optimize_token_usage(content, 4000)
-    else:
-        raise JacIntegrationError(f"Unknown operation: {operation}")
