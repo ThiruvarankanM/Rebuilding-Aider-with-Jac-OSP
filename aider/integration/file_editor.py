@@ -11,7 +11,22 @@ from pathlib import Path
 from datetime import datetime
 
 class AutoEditor:
-    """Autonomous file editor using OSP guidance"""
+    """Autonomou            # REAL OSP + LLM INTEGRATION
+            print("🔧 DEBUG: Using REAL LLM + OSP intelligence")
+            
+            # Step 1: Use Jac OSP for context analysis
+            from .jac_bridge import JacBridge
+            bridge = JacBridge()
+            
+            # Real OSP spatial analysis
+            try:
+                bridge.execute_jac_file('aider/jac/context_gatherer.jac')
+                bridge.execute_jac_file('aider/jac/impact_analyzer.jac')
+                print("✅ OSP spatial analysis complete")
+            except Exception as e:
+                print(f"⚠️ OSP analysis failed: {e}")
+            
+            # Step 2: REAL LLM API call for code generationing OSP guidance"""
     
     def __init__(self, jac_bridge):
         self.jac_bridge = jac_bridge
@@ -196,8 +211,8 @@ class AutoEditor:
             
             # Real OSP spatial analysis
             try:
-                bridge.execute_jac_file('aider/jac/context_gatherer_syntax.jac')
-                bridge.execute_jac_file('aider/jac/impact_analyzer_syntax.jac')
+                bridge.execute_jac_file('aider/jac/context_gatherer.jac')
+                bridge.execute_jac_file('aider/jac/impact_analyzer.jac')
                 print("✅ OSP spatial analysis complete")
             except Exception as e:
                 print(f"⚠️ OSP analysis failed: {e}")
@@ -292,8 +307,8 @@ For example, if task is "add email field to User class", only add the email fiel
             
             # Real OSP spatial analysis
             try:
-                bridge.execute_jac_file('aider/jac/context_gatherer_syntax.jac')
-                bridge.execute_jac_file('aider/jac/impact_analyzer_syntax.jac')
+                bridge.execute_jac_file('aider/jac/context_gatherer.jac')
+                bridge.execute_jac_file('aider/jac/impact_analyzer.jac')
                 print("✅ OSP spatial analysis complete")
             except Exception as e:
                 print(f"⚠️ OSP analysis failed: {e}")
